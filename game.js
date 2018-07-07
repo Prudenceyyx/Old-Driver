@@ -47,18 +47,20 @@ function initialize() {
     var mapProp = {
         center: myCenter,
         zoom: 15,
-        disableDefaultUI:true,
-        // disableContinuousZoom:true,
+        disableDefaultUI: false, //hide the UI buttons
         mapTypeId: google.maps.MapTypeId.ROADMAP,
         mapTypeControlOptions: {
-            mapTypeIds: ['styled_map']
+            mapTypeIds: ['standard_style','retro_style','night_style','aube_style']
         }
     };
 
     map = new google.maps.Map(document.getElementById("googleMap"), mapProp);
     //Associate the styled map with the MapTypeId and set it to display.
-    map.mapTypes.set('styled_map', styledMapType);
-    map.setMapTypeId('styled_map');
+    map.mapTypes.set('standard_style', styledMapType1);
+    map.mapTypes.set('retro_style', styledMapType2);
+    map.mapTypes.set('night_style', styledMapType3);
+    map.mapTypes.set('aube_style', styledMapType4);
+    map.setMapTypeId('aube_style');
 
     directionsDisplay.setMap(map);
 
@@ -66,6 +68,10 @@ function initialize() {
     //placeMarker(myCenter)
     initPosition.setMap(map);
     google.maps.event.addListener(map, 'click', function(event) {
+
+        // Freeze zoom when route
+        directionsDisplay.setOptions({ preserveViewport: true });
+        
 
         tmplg = event.latLng;
         initPosition.setMap(null);
