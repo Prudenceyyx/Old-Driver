@@ -106,9 +106,13 @@ function initialize() {
         tmplg = event.latLng;
         initPosition.setMap(null);
         //placeMarker(tmplg);
+        
+        //Allow to place marker only after click the button
         if (!isListeningClick) {
             return
         }
+
+        getPlace(tmplg)
 
         calcRoute(lstlg, tmplg);
         document.getElementById("dest-location").innerHTML = displayLoc(tmplg);
