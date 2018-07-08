@@ -76,8 +76,15 @@ function initialize() {
         center: myCenter,
         zoom: 15,
         disableDefaultUI: false, //hide the UI buttons
+        streetViewControl: false,
+        fullscreenControl: false,
+        zoomControlOptions: {
+            position: google.maps.ControlPosition.TOP_RIGHT
+        },
+
         mapTypeId: google.maps.MapTypeId.ROADMAP,
         mapTypeControlOptions: {
+            position: google.maps.ControlPosition.TOP_CENTER,
             mapTypeIds: ['standard_style', 'retro_style', 'night_style', 'aube_style']
         }
     };
