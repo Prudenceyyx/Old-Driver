@@ -155,36 +155,41 @@ function getemp()
 function getpass()
 {
 	//载客
-	tmplg=lstlg;
-	var destIndex = getDestination(tmplg);
-        var endlg = new google.maps.LatLng(data[destIndex]["dropoff_latitude"], data[destIndex]["dropoff_longitude"]);
-        var dur = data[destIndex]["trip_duration"];
-        
-		//var dur=15*60;  //秒数
-		//var endlg =new google.maps.LatLng(40.7143528, -74.0159731); //进行连接
-		var montmp=100;
-		var durhours = Math.floor(dur/ 60/60 ) ;
-		var durminutes = Math.floor( (dur - durhours*60*60) / 60);
-		var durseconds = Math.floor( dur % 60);
-	   // var dis= 6370*accros[cos(lstlg.lat())*cos(tmplg.lat())*cos(lstlg.lng()-tmplg.lng())+sin(lstlg.lat())*sin(tmplg.lat())];
-		//warring.innerHTML = "本次行程花费 " +dis * 60+ "秒";
-		
-		tmptime = dur;
-		maxtime -= tmptime;
-		pasttime += tmptime;
+	if(flg)
+	{
+		tmplg=lstlg;
+		var destIndex = getDestination(tmplg);
+		var endlg = new google.maps.LatLng(data[destIndex]["dropoff_latitude"], data[destIndex]["dropoff_longitude"]);
+		var dur = data[destIndex]["trip_duration"];
+		        
+			//var dur=15*60;  //秒数
+			//var endlg =new google.maps.LatLng(40.7143528, -74.0159731); //进行连接
+			var montmp=10;
+			var durhours = Math.floor(dur/ 60/60 ) ;
+			var durminutes = Math.floor( (dur - durhours*60*60) / 60);
+			var durseconds = Math.floor( dur % 60);
+		   // var dis= 6370*accros[cos(lstlg.lat())*cos(tmplg.lat())*cos(lstlg.lng()-tmplg.lng())+sin(lstlg.lat())*sin(tmplg.lat())];
+			//warring.innerHTML = "本次行程花费 " +dis * 60+ "秒";
+			
+			tmptime = dur;
+			maxtime -= tmptime;
+			pasttime += tmptime;
 
-		warring.innerHTML = "本次载客行程花费 " +durhours+ "时 " + durminutes+ "分 " +durseconds+ "秒"  ;
-		
-		allmoney += dur/montmp;
-		money.innerHTML = "本次载客收入 " + dur/montmp + " 金币 " + "  总收入" +allmoney +"  金币";
-		
-		
-        //移动地图的中心点
+			warring.innerHTML = "本次载客行程花费 " +durhours+ "时 " + durminutes+ "分 " +durseconds+ "秒"  ;
+			
+			allmoney += (dur/montmp+5);
+			money.innerHTML = "本次载客收入 " + parseInt(dur/montmp+5) + " 金币 " + "  总收入" + parseInt(allmoney)+"  金币";
+			
+			
+	        //移动地图的中心点
 
-            map.panTo(endlg);
-	draw_trip(lstlg,endlg);
-	document.getElementById("dest-location").innerHTML = displayLoc(tmplg);
-    lstlg = endlg;
+	            map.panTo(endlg);
+		draw_trip(lstlg,endlg);
+		document.getElementById("dest-location").innerHTML = displayLoc(tmplg);
+	    lstlg = endlg;
+
+	}
+	
 }
 		
 //放上小车
@@ -194,6 +199,7 @@ google.maps.event.addDomListener(window, 'load', initialize);
 var maxtime = 60 * 60 * 8;
 var pasttime = 0;
 var allmoney= 0;
+var flg=true;
 
 //时间的倒计时
 function CountDown() {
@@ -204,6 +210,7 @@ function CountDown() {
     timer2.innerHTML = oDate.getFullYear() + "年 " + (oDate.getMonth() + 1) + "月 " + oDate.getDate() + "日 " + (ohours + 9) + "时" + ominutes + "分" + oseconds + "秒";
     pasttime = pasttime + 1;
     if (maxtime > 0) {
+        flg=true;
         hours = Math.floor(maxtime / 60 / 60);
         minutes = Math.floor((maxtime - hours * 60 * 60) / 60);
         seconds = Math.floor(maxtime % 60);
@@ -218,6 +225,7 @@ function CountDown() {
          map.setMapTypeId('aube_style');
  }
  else {
+    flg=false;
     maxtime = 0;
     warring.innerHTML = "时间到!";
     hours = Math.floor(maxtime / 60/60);
@@ -232,7 +240,8 @@ function CountDown() {
     ominutes = Math.floor( (pasttime - ohours*60*60) / 60);
     oseconds = Math.floor(pasttime % 60);
     timer2.innerHTML = oDate.getFullYear() +"年 " + (oDate.getMonth()+1) +"月 "  + oDate.getDate()+"日 " + (ohours+9) + "时"+ ominutes + "分" + oseconds + "秒";
-
+    alert("下班时间到了！  " + "本次游戏赚得  " + parseInt(allmoney) + "  金币"); 
+    money.innerHTML = "本次载客收入 " + " 金币 " + "  总收入" +"  金币";
     clearInterval(timer);
         //initialize();
 
