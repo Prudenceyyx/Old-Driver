@@ -4,6 +4,7 @@
 <head>
     <title>Old Driver</title>
     <meta charset=UTF-8 />
+    <meta name="viewport" content="width=device-width, initial-scale=1">
     <script src="http://maps.googleapis.com/maps/api/js?key=AIzaSyBzE9xAESye6Kde-3hT-6B90nfwUkcS8Yw&sensor=false">
     </script>
     <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.3.1/jquery.min.js"></script>
@@ -26,8 +27,9 @@
     pointer-events: none;
     background: none !important;
 }
+
 button {
-    pointer-events:auto;
+    pointer-events: auto;
 }
 
 .widge {
@@ -101,7 +103,7 @@ button {
 }
 
 .bottom {
-    margin-top:3px; 
+    margin-top: 3px;
     height: 40px;
     padding-top: 10px;
     font-size: 14px;
@@ -113,27 +115,28 @@ button {
 </style>
 
 <body>
-    <input type="file" id="csv-file" name="files">
+    <input type="file" id="csv-file" name="files"/>
     <div id="googleMap"></div>
     <div id="overlay-container">
         <div class="widge">
             <img id="logo" src="images/Logo.png">
-            <div class="style-panel up text-panel">
+            <div class="style-panel up text-panel" style="display: none">
                 <!--  You are at Union Square -->
                 <div class="text-panel">You are at</div>
-                <div id="current-place" class="text-variable ">a</div>
-                <div id="current-location" class="text-variable ">b</div>
+                <div id="current-place" class="text-variable">a</div>
+                <div id="current-location" class="text-variable">b</div>
             </div>
             <div class="style-panel up" id="desired-location">
                 <div class="text-panel" style="font-size: 14px">Where do you want to pick up?</div>
-                <div id="dest-location" class="text-variable">c</div>
-                <button style="position:relative;padding-left: 5%;" onclick="turnOnFlag()">Click on the Map</button>
+                <div id="dest-location" class="text-variable" style="font-size: 14px;display: none">c</div>
+                <button style="position:relative;padding-left: 5%;background-color: white;color:black;border:none;margin-left: 18px" onclick="turnOnFlag()">Click on the Map</button>
             </div>
         </div>
         <div class="bottom-left">
             <div class="style-panel text-panel bottom" id="timer2"></div>
             <div class="style-panel text-panel bottom" id="timer"></div>
             <div class="style-panel text-panel bottom" id="warring"></div>
+            <div class="style-panel text-panel bottom" id="money" style="font-size: 10px"></div>
         </div>
     </div>
 </body>
@@ -142,7 +145,7 @@ var input = document.querySelector('input');
 var data;
 var isListeningClick = false;
 
-function turnOnFlag(){
+function turnOnFlag() {
     //To enable choose pick-up location
     isListeningClick = true;
 }
