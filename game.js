@@ -85,7 +85,6 @@ function initialize() {
 
     dataVisualize();
 
-    //placeMarker(myCenter)
     initPosition.setMap(map);
     warring.innerHTML = "本次行程花费   " + "时   " + "分   " + "秒"  ;
     money.innerHTML = "本次载客收入  "  + " 金币  " + "  总收入 "  +"  金币" ;
@@ -102,19 +101,18 @@ function initialize() {
         //根据行程计算花费的时间
         tmplg=event.latLng;
         initPosition.setMap(null);
-		//placeMarker(tmplg);
-		//calcRoute(lstlg,tmplg);
 		
-		//calcost(tmplg);
 
-		
-       //空车 
+
         getemp();
-		
+
+
         window.setTimeout(function(event) {
 	     getpass();
 
         }, 3000);
+
+
         isListeningClick = false;
 		
     });
@@ -126,13 +124,6 @@ function initialize() {
 		google.maps.event.trigger(this.getMap(),'click',e);
 	});
 
-    /*google.maps.event.addListener(map, 'zoom_changed', function() {
-        // 3 seconds after the center of the map has changed, pan back to the marker
-        window.setTimeout(function() {
-
-            map.panTo(tmplg);
-        }, 1000);
-    });*/
      google.maps.event.addListener(directionsDisplay, 'directions_changed', function() {
         //When destination changes
         document.getElementById("current-location").innerHTML = displayLoc(lstlg);
@@ -155,9 +146,10 @@ function getemp()
 		maxtime -= tmptime;
 		pasttime += tmptime;
 		map.panTo(tmplg);
-		calcRoute(lstlg,tmplg);
+        //calcRoute(lstlg,tmplg);
+        draw_trip(lstlg,tmplg);
 		document.getElementById("dest-location").innerHTML = displayLoc(tmplg);
-        		lstlg = tmplg;
+        lstlg = tmplg;
 	
 }
 function getpass()
@@ -190,22 +182,12 @@ function getpass()
         //移动地图的中心点
 
             map.panTo(endlg);
-	calcRoute(lstlg,endlg);
+	draw_trip(lstlg,endlg);
 	document.getElementById("dest-location").innerHTML = displayLoc(tmplg);
-        lstlg = endlg;
+    lstlg = endlg;
 }
 		
 //放上小车
-function placeMarker(location) {
-    var marker = new google.maps.Marker({
-        position: location,
-        map: map,
-    });
-    var infowindow = new google.maps.InfoWindow({
-        content: 'Latitude: ' + location.lat() + '<br>Longitude: ' + location.lng()
-    });
-    infowindow.open(map, marker);
-}
 
 google.maps.event.addDomListener(window, 'load', initialize);
 

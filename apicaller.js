@@ -20,7 +20,7 @@ var styledMapType4 = new google.maps.StyledMapType(aube_style, { name: "aube" })
 var markerOption = {
 	clickable: false,
 	flat: true,
-	icon: 'images/car_ico_25.png',
+	icon: 'images/no.pic',
 	visible: true,
 	map: map
 };
@@ -28,6 +28,46 @@ var markerOption = {
 var directionsService = new google.maps.DirectionsService();
 var directionsDisplay = new google.maps.DirectionsRenderer({ markerOptions: markerOption });
 
+
+var mk1 = new google.maps.Marker({
+		position: myCenter,
+        map: map,
+    	icon:'images/car_30_past.png'
+    });
+var mk2 = new google.maps.Marker({
+		position: myCenter,
+        map: map,
+    	icon:'images/car_30.png'
+    });
+
+function draw_trip(lg1,lg2)
+{
+
+	mk1.setPosition(lg1);
+	mk2.setPosition(lg2);
+
+    mk1.setMap(map);
+    mk2.setMap(map);
+
+    calcRoute(lg1,lg2);   
+}
+
+function placeMarker_car(location) {
+    var marker = new google.maps.Marker({
+        position: location,
+        map: map,
+    	icon:'images/car_30.png'
+    });
+    //return marker;
+}
+function placeMarker_leaving_car(location) {
+    var marker = new google.maps.Marker({
+        position: location,
+        map: map,
+    	icon:'images/car_30_past.png'
+    });
+    //return marker;
+}
 //用googlemap api 画出路径
 function calcRoute(start, end) {
 	var request = {
