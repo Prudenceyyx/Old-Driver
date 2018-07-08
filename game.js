@@ -4,7 +4,7 @@ var lstlg = new google.maps.LatLng(40.7143528, -74.0059731);
 var tmplg = new google.maps.LatLng(40.7143528, -74.0059731);
 
 var markerOption = {
-    clickable: false,
+    // clickable: false,
     flat: true,
     icon: 'images/car_ico_25.png',
     visible: true,
@@ -20,9 +20,6 @@ var initPosition = new google.maps.Marker({
     icon: 'images/car_ico_25.png',
     map: map,
 });
-
-
-
 
 var EARTH_RADIUS = 6378137.0; //单位M
 var PI = Math.PI;
@@ -42,6 +39,37 @@ function getGreatCircleDistance(lat1, lng1, lat2, lng2) {
     return s;
 }
 
+function savetodata(src) {
+    data = src;
+}
+
+function getDestination(srclg) {
+    //Get a user near srclg, and return the user's destination location
+    //srclg: google,maps.LatLng object
+    //return qpp: id index
+    var min_dist = 10000;
+    var qpp = 0;
+
+    for (var i = 0; i < data.length; i += 1) {
+        var temp = getGreatCircleDistance(data[i]["pickup_latitude"], data[i]["pickup_longitude"], srclg.lat(), srclg.lng());
+        if (temp < min_dist) {
+            min_dist = temp;
+            qpp = i;
+        }
+    }
+    console.log(temp, min_dist, qpp);
+    console.log(data[qpp]);
+    // var destlg = new google.maps.LatLng(data[qpp]["dropoff_latitude"], data[qpp]["dropoff_longitude"]);
+
+    return qpp;
+}
+
+function displayLoc(lstlg) {
+    function num(x){
+    return Number.parseFloat(x).toFixed(3);
+}
+    return num(lstlg.lat()) + " N " + num(lstlg.lng()) + " W";
+}
 
 function initialize() {
     var mapProp = {
@@ -50,7 +78,7 @@ function initialize() {
         disableDefaultUI: false, //hide the UI buttons
         mapTypeId: google.maps.MapTypeId.ROADMAP,
         mapTypeControlOptions: {
-            mapTypeIds: ['standard_style','retro_style','night_style','aube_style']
+            mapTypeIds: ['standard_style', 'retro_style', 'night_style', 'aube_style']
         }
     };
 
@@ -66,37 +94,50 @@ function initialize() {
 
 
     //placeMarker(myCenter)
-     initPosition.setMap(map);
-     warring.innerHTML = "本次行程花费  " + "时  " + "分  " + "秒"  ;
-	 
+    initPosition.setMap(map);
+    warring.innerHTML = "本次行程花费  " + "时  " + "分  " + "秒";
+
     google.maps.event.addListener(map, 'click', function(event) {
 
         // Freeze zoom when route
         directionsDisplay.setOptions({ preserveViewport: true });
-        
 
-        tmplg=event.latLng;
-		initPosition.setMap(null);
-		//placeMarker(tmplg);
-		calcRoute(lstlg,tmplg);
-		var dis = getGreatCircleDistance(lstlg.lat(),lstlg.lng(),tmplg.lat(),tmplg.lng());
-		dis = dis/1000.0;
-		var dishours = Math.floor(dis*60 / 60/60 ) ;
-		var disminutes = Math.floor( (dis*60 - dishours*60*60) / 60);
-		var disseconds = Math.floor( dis*60 % 60);
-	   // var dis= 6370*accros[cos(lstlg.lat())*cos(tmplg.lat())*cos(lstlg.lng()-tmplg.lng())+sin(lstlg.lat())*sin(tmplg.lat())];
-		//warring.innerHTML = "本次行程花费 " +dis * 60+ "秒";
-		warring.innerHTML = "本次行程花费 " +dishours+ "时 " + disminutes+ "分 " +disseconds+ "秒"  ;
-		var tmptime = dis *60;
-		maxtime -= tmptime;
-		pasttime += tmptime;
+
+        tmplg = event.latLng;
+        initPosition.setMap(null);
+        //placeMarker(tmplg);
+        if (!isListeningClick) {
+            return
+        }
+
+        calcRoute(lstlg, tmplg);
+        document.getElementById("dest-location").innerHTML = displayLoc(tmplg);
+
+        var destIndex = getDestination(tmplg);
+        var destlg = new google.maps.LatLng(data[destIndex]["dropoff_latitude"], data[destIndex]["dropoff_longitude"]);
+
+        //Todo: given dest index, calculate trip duration and move to next position
+
+
+
+        var dis = getGreatCircleDistance(lstlg.lat(), lstlg.lng(), tmplg.lat(), tmplg.lng());
+        dis = dis / 1000.0;
+        var dishours = Math.floor(dis * 60 / 60 / 60);
+        var disminutes = Math.floor((dis * 60 - dishours * 60 * 60) / 60);
+        var disseconds = Math.floor(dis * 60 % 60);
+        // var dis= 6370*accros[cos(lstlg.lat())*cos(tmplg.lat())*cos(lstlg.lng()-tmplg.lng())+sin(lstlg.lat())*sin(tmplg.lat())];
+        //warring.innerHTML = "本次行程花费 " +dis * 60+ "秒";
+        warring.innerHTML = "本次行程花费 " + dishours + "时 " + disminutes + "分 " + disseconds + "秒";
+        var tmptime = dis * 60;
+        maxtime -= tmptime;
+        pasttime += tmptime;
 
 
         map.panTo(tmplg);
         lstlg = tmplg;
         //map.panTo(tmplg)
-
         //placeMarker(lstlg);
+        isListeningClick = false;
     });
 
     google.maps.event.addListener(map, 'zoom_changed', function() {
@@ -108,7 +149,7 @@ function initialize() {
 
             /*var dis = getGreatCircleDistance(lstlg.lat(),lstlg.lng(),tmplg.lat(),tmplg.lng());
     dis = dis/1000.0;
-   // var dis= 6370*accros[cos(lstlg.lat())*cos(tmplg.lat())*cos(lstlg.lng()-tmplg.lng())+sin(lstlg.lat())*sin(tmplg.lat())];
+       // var dis= 6370*accros[cos(lstlg.lat())*cos(tmplg.lat())*cos(lstlg.lng()-tmplg.lng())+sin(lstlg.lat())*sin(tmplg.lat())];
     warring.innerHTML = "该次行程花费 " +dis * 60+ "秒";
     var tmptime = dis *60;
     maxtime -= tmptime;
@@ -116,6 +157,12 @@ function initialize() {
 
             map.panTo(tmplg);
         }, 1000);
+    });
+    google.maps.event.addListener(directionsDisplay, 'directions_changed', function() {
+        //When destination changes
+        document.getElementById("current-location").innerHTML = displayLoc(lstlg);
+        // displayLoc(lstlg.lat()) + " N " + displayLoc(lstlg.lng()) + " W";
+
     });
 }
 
@@ -176,31 +223,30 @@ function CountDown() {
         msg = "距离下班还有" + hours + "时" + minutes + "分" + seconds + "秒";
         document.all["timer"].innerHTML = msg;
         --maxtime;
-		if(maxtime<=6*3600 &&  maxtime>4*3600)
-			map.setMapTypeId('retro_style');
-		else if(maxtime<=4*3600 &&  maxtime>2*3600)
-			map.setMapTypeId('night_style');
-		else if(maxtime<=2*3600)
-			map.setMapTypeId('aube_style');
-    }
-	else {
+        if (maxtime <= 6 * 3600 && maxtime > 4 * 3600)
+            map.setMapTypeId('retro_style');
+        else if (maxtime <= 4 * 3600 && maxtime > 2 * 3600)
+            map.setMapTypeId('night_style');
+        else if (maxtime <= 2 * 3600)
+            map.setMapTypeId('aube_style');
+    } else {
 
         maxtime = 0;
-		warring.innerHTML = "时间到!";
-		hours = Math.floor(maxtime / 60/60);
-		minutes = Math.floor( (maxtime - hours*60*60) / 60);
-		seconds = Math.floor(maxtime % 60);
-		msg = "距离下班还有" + hours + "时"+ minutes + "分" + seconds + "秒";
-		document.all["timer"].innerHTML = msg;
+        warring.innerHTML = "时间到!";
+        hours = Math.floor(maxtime / 60 / 60);
+        minutes = Math.floor((maxtime - hours * 60 * 60) / 60);
+        seconds = Math.floor(maxtime % 60);
+        msg = "距离下班还有" + hours + "时" + minutes + "分" + seconds + "秒";
+        document.all["timer"].innerHTML = msg;
 
-		pasttime = 8*60*60;
-		oDate = new Date(); 
-		ohours = Math.floor(pasttime / 60/60 ) ;
-		ominutes = Math.floor( (pasttime - ohours*60*60) / 60);
-		oseconds = Math.floor(pasttime % 60);
-		timer2.innerHTML = oDate.getFullYear() +"年 " + (oDate.getMonth()+1) +"月 "  + oDate.getDate()+"日 " + (ohours+9) + "时"+ ominutes + "分" + oseconds + "秒";
+        pasttime = 8 * 60 * 60;
+        oDate = new Date();
+        ohours = Math.floor(pasttime / 60 / 60);
+        ominutes = Math.floor((pasttime - ohours * 60 * 60) / 60);
+        oseconds = Math.floor(pasttime % 60);
+        timer2.innerHTML = oDate.getFullYear() + "年 " + (oDate.getMonth() + 1) + "月 " + oDate.getDate() + "日 " + (ohours + 9) + "时" + ominutes + "分" + oseconds + "秒";
 
-		clearInterval(timer);
+        clearInterval(timer);
         //initialize();
 
     }

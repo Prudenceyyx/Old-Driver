@@ -6,7 +6,9 @@
     <meta charset=UTF-8 />
     <script src="http://maps.googleapis.com/maps/api/js?key=AIzaSyBzE9xAESye6Kde-3hT-6B90nfwUkcS8Yw&sensor=false">
     </script>
+    <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.3.1/jquery.min.js"></script>
     <script type="text/javascript" src="stylemap.js"></script>
+    <script type="text/javascript" src="papaparse.min.js"></script>
     <script type="text/javascript" src="game.js"></script>
     <script type="text/javascript" src="apicaller.js"></script>
     <link rel="stylesheet" href="https://fonts.googleapis.com/css?family=Raleway">
@@ -21,10 +23,12 @@
     min-height: 100%;
     /*border: 3px solid #73AD21;*/
     /*display: none;*/
-    pointer-events:none;
-    background:none !important;
+    pointer-events: none;
+    background: none !important;
 }
-
+button {
+    pointer-events:auto;
+}
 
 .widge {
     position: relative;
@@ -32,7 +36,7 @@
     left: 20px;
     width: 150px;
     height: 400px;
-    max-width: 20%;
+    /*max-width: 20%;*/
     min-width: 50px;
     /*max-height: 400px;*/
     /*border: 3px solid #73AD21;*/
@@ -40,23 +44,23 @@
 
 .bottom-left {
     position: relative;
-    bottom: 25px;
+    bottom: -5px;
     left: 20px;
     width: 150px;
-    height: 400px;
+    /*height: 100px;*/
 }
+
 .style-panel {
     /*vertical-align: middle;*/
     /*width: 200px;*/
     /*width: 80%;*/
-
-   /* padding-top: 10px;
+    /* padding-top: 10px;
     padding-bottom: 10px: */
-    margin-top:10px;
-    height: 60px;
+    margin-top: 10px;
+    height: 100px;
     background-color: #333333;
     opacity: 0.75;
-    border-radius:10px; 
+    border-radius: 10px;
 }
 
 #googleMap {
@@ -73,9 +77,10 @@
 }
 
 .text-panel {
-    padding: 10%;
-    padding-left: 15%;
-    padding-right: 15%;
+    box-sizing: content-box;
+    padding: 5%;
+    padding-left: 12%;
+    padding-right: 12%;
     color: white;
     font-family: "Raleway", sans-serif;
     font-style: bold;
@@ -83,34 +88,90 @@
     font-size: 18px;
 }
 
-.bottom{
-  height: 40px;
-  padding-top: 10px;
-  font-size: 14px;
-
+.text-variable {
+    box-sizing: content-box;
+    padding-top: 0%;
+    padding-left: 2%;
+    padding-right: 2%;
+    color: white;
+    font-family: "Raleway", sans-serif;
+    font-style: bold;
+    text-align: center;
+    font-size: 18px;
 }
+
+.bottom {
+    margin-top:3px; 
+    height: 40px;
+    padding-top: 10px;
+    font-size: 14px;
+}
+
 .up {
-    height: 80px;
+    height: 100px;
 }
-
 </style>
 
 <body>
+    <input type="file" id="csv-file" name="files">
     <div id="googleMap"></div>
     <div id="overlay-container">
         <div class="widge">
             <img id="logo" src="images/Logo.png">
-            <div class="style-panel up text-panel" id="current-location">You are at Union Square</div>
-            <div class="style-panel up text-panel" id="desired-location">Where do you want to pick up?</div>
+            <div class="style-panel up text-panel">
+                <!--  You are at Union Square -->
+                <div class="text-panel">You are at</div>
+                <div id="current-place" class="text-variable ">a</div>
+                <div id="current-location" class="text-variable ">b</div>
+            </div>
+            <div class="style-panel up" id="desired-location">
+                <div class="text-panel" style="font-size: 14px">Where do you want to pick up?</div>
+                <div id="dest-location" class="text-variable">c</div>
+                <button style="position:relative;padding-left: 5%;" onclick="turnOnFlag()">Click on the Map</button>
+            </div>
         </div>
         <div class="bottom-left">
-            
             <div class="style-panel text-panel bottom" id="timer2"></div>
             <div class="style-panel text-panel bottom" id="timer"></div>
-			<div class="style-panel text-panel bottom" id="warring"></div>
+            <div class="style-panel text-panel bottom" id="warring"></div>
         </div>
-
     </div>
 </body>
+<script type="text/javascript">
+var input = document.querySelector('input');
+var data;
+var isListeningClick = false;
+
+function turnOnFlag(){
+    //To enable choose pick-up location
+    isListeningClick = true;
+}
+
+function handleFileSelect(evt) {
+    var file = evt.target.files[0];
+    Papa.parse(file, {
+        //page will stay reactive when uploading
+        worker: true,
+        //a step callback to receive the results row-by-row
+        // step: function(row) {
+        //     // console.log("Row:", row.data);
+        // },
+        //includ header in Json
+        header: true,
+        //parse to numeric and boolean formats
+        dynamicTyping: true,
+        //The callback to execute when parsing is complete. 
+        complete: function(results, file) {
+            console.log(results);
+            savetodata(results.data);
+        }
+    });
+
+}
+
+$(document).ready(function() {
+    $("#csv-file").change(handleFileSelect);
+});
+</script>
 
 </html>
