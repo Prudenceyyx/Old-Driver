@@ -63,6 +63,26 @@ function initialize() {
     map.setMapTypeId('standard_style');
 
     directionsDisplay.setMap(map);
+	
+	
+	        // Create a <script> tag and set the USGS URL as the source.
+        var script = document.createElement('script');
+
+        // This example uses a local copy of the GeoJSON stored at
+        // http://earthquake.usgs.gov/earthquakes/feed/v1.0/summary/2.5_week.geojsonp
+        //script.src = 'https://developers.google.com/maps/documentation/javascript/examples/json/earthquake_GeoJSONP.js';
+        script.src = 'earthquake_big.js'
+        document.getElementsByTagName('head')[0].appendChild(script);
+
+        map.data.setStyle(function(feature) {
+          var magnitude = feature.getProperty('mag');
+          return {
+            icon: getCircle(magnitude)
+          };
+        });
+	
+	
+	
 
 
     //placeMarker(myCenter)
@@ -81,13 +101,14 @@ function initialize() {
 		calcRoute(lstlg,tmplg);
 		var dis = getGreatCircleDistance(lstlg.lat(),lstlg.lng(),tmplg.lat(),tmplg.lng());
 		dis = dis/1000.0;
-		var dishours = Math.floor(dis*60 / 60/60 ) ;
-		var disminutes = Math.floor( (dis*60 - dishours*60*60) / 60);
-		var disseconds = Math.floor( dis*60 % 60);
+		var spe=1000.0;
+		var dishours = Math.floor(dis*spe / 60/60 ) ;
+		var disminutes = Math.floor( (dis*spe - dishours*60*60) / 60);
+		var disseconds = Math.floor( dis*spe % 60);
 	   // var dis= 6370*accros[cos(lstlg.lat())*cos(tmplg.lat())*cos(lstlg.lng()-tmplg.lng())+sin(lstlg.lat())*sin(tmplg.lat())];
 		//warring.innerHTML = "本次行程花费 " +dis * 60+ "秒";
 		warring.innerHTML = "本次行程花费 " +dishours+ "时 " + disminutes+ "分 " +disseconds+ "秒"  ;
-		var tmptime = dis *60;
+		var tmptime = dis *spe;
 		maxtime -= tmptime;
 		pasttime += tmptime;
 
@@ -98,6 +119,10 @@ function initialize() {
 
         //placeMarker(lstlg);
     });
+	
+	map.data.addListener('click',function(e){
+		google.maps.event.trigger(this.getMap(),'click',e);
+	});
 
     google.maps.event.addListener(map, 'zoom_changed', function() {
         // 3 seconds after the center of the map has changed, pan back to the marker
@@ -105,19 +130,30 @@ function initialize() {
             //map.setZoom(12);
             //map.panTo(lstlg);
 
-
-            /*var dis = getGreatCircleDistance(lstlg.lat(),lstlg.lng(),tmplg.lat(),tmplg.lng());
-    dis = dis/1000.0;
-   // var dis= 6370*accros[cos(lstlg.lat())*cos(tmplg.lat())*cos(lstlg.lng()-tmplg.lng())+sin(lstlg.lat())*sin(tmplg.lat())];
-    warring.innerHTML = "该次行程花费 " +dis * 60+ "秒";
-    var tmptime = dis *60;
-    maxtime -= tmptime;
-    lstlg=tmplg;*/
-
             map.panTo(tmplg);
         }, 1000);
     });
 }
+
+
+
+function getCircle(magnitude) {
+        return {
+          path: google.maps.SymbolPath.CIRCLE,
+          fillColor: 'red',
+          fillOpacity: magnitude*0.3,
+          scale: 8,
+          olor: 'white',
+          strokeWeight: .5
+        };
+      }
+
+      function eqfeed_callback(results) {
+        map.data.addGeoJson(results);
+      }
+
+
+
 
 function calcRoute(start, end) {
     var request = {
@@ -150,19 +186,7 @@ var pasttime = 0;
 
 function CountDown() {
 
-    //var oDate = new Date(); 
-    //实例一个时间对象；
-    //oDate.getFullYear();   //获取系统的年；
-    //oDate.getMonth()+1;   //获取系统月份，由于月份是从0开始计算，所以要加1
-    //oDate.getDate(); // 获取系统日，
-    //oDate.getHours(); //获取系统时，
-    //oDate.getMinutes(); //分
-    //oDate.getSeconds(); //秒
-    //var osec=  oDate.getHours()*3600 + oDate.getMinutes()*60 + oDate.getSeconds() - 9*3600;
-    //var ohour= Math.floor(osec / 60/60);
-    //var omin= Math.floor((osec - ohour*60*60)/60);
-    //var ssec=Math.floor(osec % 60);
-    //timer2.innerHTML = oDate.getFullYear() +"年 " + (oDate.getMonth()+1) +"月 "  + oDate.getDate()+"日 " + (oDate.getHours() - ohour)+ ": " + (oDate.getMinutes() -omin)+ ": " + (oDate.getSeconds() -ssec);
+ 
     var ohours = Math.floor(pasttime / 60 / 60);
     var ominutes = Math.floor((pasttime - ohours * 60 * 60) / 60);
     var oseconds = Math.floor(pasttime % 60);

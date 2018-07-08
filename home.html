@@ -4,12 +4,18 @@
 <head>
     <title>Old Driver</title>
     <meta charset=UTF-8 />
+	
+	<meta name="viewport" content="width=device-width, initial-scale=1">
+	
     <script src="http://maps.googleapis.com/maps/api/js?key=AIzaSyBzE9xAESye6Kde-3hT-6B90nfwUkcS8Yw&sensor=false">
     </script>
     <script type="text/javascript" src="stylemap.js"></script>
     <script type="text/javascript" src="game.js"></script>
     <script type="text/javascript" src="apicaller.js"></script>
+	
+
     <link rel="stylesheet" href="https://fonts.googleapis.com/css?family=Raleway">
+	
 </head>
 <style type="text/css">
 #overlay-container {
@@ -97,20 +103,22 @@
 
 <body>
     <div id="googleMap"></div>
-    <div id="overlay-container">
+    
+	<div id="overlay-container">
         <div class="widge">
             <img id="logo" src="images/Logo.png">
             <div class="style-panel up text-panel" id="current-location">You are at Union Square</div>
             <div class="style-panel up text-panel" id="desired-location">Where do you want to pick up?</div>
         </div>
         <div class="bottom-left">
-            
             <div class="style-panel text-panel bottom" id="timer2"></div>
             <div class="style-panel text-panel bottom" id="timer"></div>
 			<div class="style-panel text-panel bottom" id="warring"></div>
         </div>
-
+		
     </div>
+	
+	
 </body>
 
 </html>
