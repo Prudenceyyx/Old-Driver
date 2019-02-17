@@ -16,109 +16,8 @@
     <script defer src="https://use.fontawesome.com/releases/v5.3.1/js/all.js"></script>
     <link rel="stylesheet" href="https://fonts.googleapis.com/css?family=Raleway">
 </head>
-<!-- <style type="text/css">
-#overlay-container {
-    position: absolute;
-    top: 8px;
-    left: 8px;
-    width: 98%;
-    /*height: 500px;*/
-    min-height: 100%;
-    /*border: 3px solid #73AD21;*/
-    /*display: none;*/
-    pointer-events: none;
-    background: none !important;
-}-->
-<!--
-button {
-    pointer-events: auto;
-}
-
-.widge {
-    position: relative;
-    top: 20px;
-    left: 20px;
-    width: 150px;
-    height: 400px;
-    /*max-width: 20%;*/
-    min-width: 50px;
-    /*max-height: 400px;*/
-    /*border: 3px solid #73AD21;*/
-}
-
-.bottom-left {
-    position: relative;
-    bottom: -5px;
-    left: 20px;
-    width: 150px;
-    /*height: 100px;*/
-}
-
-.style-panel {
-    /*vertical-align: middle;*/
-    /*width: 200px;*/
-    /*width: 80%;*/
-    /* padding-top: 10px;
-    padding-bottom: 10px: */
-    margin-top: 10px;
-    height: 100px;
-    background-color: #333333;
-    opacity: 0.75;
-    border-radius: 10px;
-}
-
-#googleMap {
-    width: 100%;
-    /*min-height: 100%;*/
-    height: 750px;
-}
-
-#logo {
-    /*Todo: middle*/
-    height: 100px;
-    width: 100px;
-    /*padding: 10px;*/
-}
-
-.text-panel {
-    box-sizing: content-box;
-    padding: 5%;
-    padding-left: 12%;
-    padding-right: 12%;
-    color: white;
-    font-family: "Raleway", sans-serif;
-    font-style: bold;
-    text-align: center;
-    font-size: 18px;
-}
-
-.text-variable {
-    box-sizing: content-box;
-    padding-top: 0%;
-    padding-left: 2%;
-    padding-right: 2%;
-    color: white;
-    font-family: "Raleway", sans-serif;
-    font-style: bold;
-    text-align: center;
-    font-size: 18px;
-}
-
-.bottom {
-    margin-top: 3px;
-    height: 40px;
-    padding-top: 10px;
-    font-size: 14px;
-}
-
-.up {
-    height: 100px;
-}
-</style> -->
 <style type="text/css">
 .navbar {
-    
-
     &.is-transparent {
         background-color: transparent;
         background-image: none;
@@ -126,47 +25,43 @@ button {
 }
 
 
-.hero-body{
-    top:0;
+.hero-body {
+    top: 0;
 }
 
-#overlay-container {
+/*#overlay-container {
     position: absolute;
     top: 8px;
     left: 8px;
     width: 98%;
-    /*height: 500px;*/
     min-height: 100%;
-    /*border: 3px solid #73AD21;*/
-    /*display: none;*/
     pointer-events: none;
     background: none !important;
-}
-
+}*/
 </style>
 
-<body>
+<body onload="startTime()">
     <!-- <input type="file" id="csv-file" name="files"/> -->
     <section class="hero is-fullheight">
-        <!-- <div class="hero-head is-transparent"> -->
         <nav class="navbar is-transparent">
-            <div class="container">
-                <div class="navbar-brand">
-                    <a class="navbar-item">
-            <img src="images/Logo.png" alt="Logo">
-          </a>
-                    <span class="navbar-burger burger" data-target="navbarMenuHeroA">
-<span></span>
-                    <span></span>
-                    <span></span>
-                    </span>
+            <div class="navbar-brand">
+                <a class="navbar-item"><img src="images/Logo.png" alt="Logo" /></a>
+                <a role="button" class="navbar-burger burger" aria-label="menu" aria-expanded="false" data-target="navbarBasicExample">
+      <span aria-hidden="true"></span>
+      <span aria-hidden="true"></span>
+      <span aria-hidden="true"></span>
+    </a>
+            </div>
+            <div class="navbar-menu">
+                <div class="navbar-start" style="flex-grow: 1; justify-content: center;">
+                    <a class="navbar-item" id="timer2"></a>
+                </div>
+                <div class="navbar-end">
+                    <a class="navbar-item">shopping cart</a>
                 </div>
             </div>
         </nav>
-        <!-- </div> -->
         <div class="hero-body" id="googleMap">
-            <!-- <div class="container" id="googleMap"></div> -->
-            <!-- class="hero-body" -->
         </div>
     </section>
     <div id="overlay-container" style="display: none">
@@ -185,7 +80,7 @@ button {
             </div>
         </div>
         <div class="bottom-left">
-            <div class="style-panel text-panel bottom" id="timer2"></div>
+            <!-- <div class="style-panel text-panel bottom" id="timer2"></div> -->
             <div class="style-panel text-panel bottom" id="timer"></div>
             <div class="style-panel text-panel bottom" id="warring"></div>
             <div class="style-panel text-panel bottom" id="money" style="font-size: 10px"></div>
@@ -227,6 +122,7 @@ function handleFileSelect(evt) {
 $(document).ready(function() {
     $("#csv-file").change(handleFileSelect);
 });
+// runTime()
 </script>
 
 </html>
