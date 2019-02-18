@@ -3,10 +3,17 @@ For 2018 Google Girl Hackathon IV in Shanghai
 
 [Start Playing Here]https://prudenceyyx.github.io/Old-Driver/index.html
 
-![morning][map1]
-![noon][map2]
-![afternoon][map3]
-![night][map4]
+morning:
+![alt text][map1]
+
+noon:
+![alt text][map2]
+
+afternoon:
+![alt text][map3]
+
+night:
+![alt text][map4]
 
 [map1]:https://github.com/Prudenceyyx/Old-Driver/blob/master/doc/map_1.png?raw=true
 [map2]:https://github.com/Prudenceyyx/Old-Driver/blob/master/doc/map_2.png?raw=true
