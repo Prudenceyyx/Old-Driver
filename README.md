@@ -3,6 +3,13 @@ For Google Girl Hackathon IV in Shanghai
 
 [Start Playing Here]https://prudenceyyx.github.io/Old-Driver/index.html
 
+## Improvement (in css branch)
+- [x] Content-security using HTTPS
+- [x] Reduce loading time by making logo icon small
+- [ ] Unify UI by adopting Bulma CSS framework
+- [ ] Add game instruction
+
+
 # What
 What is a typical day like for a taxi driver in New York City? Try our data-driven simulation game built within 48 hours in Google Girl Hackathon. 
 In this game, you, playing a role of driver, need to choose proper places to await passengers by clicking on the map. On the map provides data visualization of the pick-up demands proximity, showing as the opacity of red dots.
