@@ -3,6 +3,12 @@ For 2018 Google Girl Hackathon IV in Shanghai
 
 [Start Playing Here]https://prudenceyyx.github.io/Old-Driver/index.html
 
+### Improvement (WIP in css branch)
+- [x] Content-security using HTTPS
+- [x] Reduce loading time by making logo icon small
+- [ ] Unify UI by adopting Bulma CSS framework
+- [ ] Add game instruction
+
 morning: (Road direction appears after you click the button and choose a place)
 
 ![alt text][map1]
@@ -24,11 +30,6 @@ night:
 [map3]:https://github.com/Prudenceyyx/Old-Driver/blob/master/doc/map_3.png?raw=true
 [map4]:https://github.com/Prudenceyyx/Old-Driver/blob/master/doc/map_4.png?raw=true
 
-## Improvement (in css branch)
-- [x] Content-security using HTTPS
-- [x] Reduce loading time by making logo icon small
-- [ ] Unify UI by adopting Bulma CSS framework
-- [ ] Add game instruction
 
 
 # What
