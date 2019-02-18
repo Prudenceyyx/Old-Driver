@@ -10,7 +10,7 @@ In this game, you, playing a role of driver, need to choose proper places to awa
 Your goal is to earn as much as possible within the 8-hour work time. Be careful about your choices and be efficient. 
 
 # Why
-Given a dataset of the taxi tranffic in the New York City in 2016, it comes naturally to us, and also to other teams, to optimize and make prediciton on the data from the perspective of taxi passengers. Why, however, couldn't the same dataset benefit taxi drivers? Drivers nowadays couldn't but rely heavily on the advice from ridesharing app, whose companies have recently shrunk the drivers' agency to pick orders. 
+Given a dataset of the taxi tranffic in the New York City in 2016, it comes naturally to us, and also to other teams, to optimize and make prediciton on the data from the perspective of taxi passengers. Why, however, couldn't the same dataset in turn benefit taxi drivers? Drivers nowadays couldn't but rely heavily on the advice from ridesharing apps, whose companies have recently shrunk the drivers' agency to pick orders. 
 
 
 # Developers
