@@ -14,10 +14,14 @@ Given a dataset of the taxi tranffic in the New York City in 2016, it comes natu
 
 
 # Developers
-Yao, Yuxia (Prudence)
 Jin, Yuhang
+
 Huang, Xiao
+
 Wu, Yuanyuan
+
+Yao, Yuxia (Prudence)
+
 Zhang, Peiying
 
 
