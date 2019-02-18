@@ -106,7 +106,7 @@ function initialize() {
         //根据行程计算花费的时间
         tmplg = event.latLng;
         initPosition.setMap(null);
-
+        
         getemp();
         getPlace(tmplg);
 
@@ -207,30 +207,6 @@ var maxtime = 60 * 60 * 8;
 var pasttime = 0;
 var allmoney = 0;
 var flg = true;
-var start;
-
-function startTime() {
-   start = new Date();
-   // runTime()
-}
-
-function runTime() {
-    start.setMinutes(start.getMinutes()+1);
-    var h = start.getHours();
-    var m = start.getMinutes();
-    h = checkTime(h);
-    m = checkTime(m);
-    timer2.innerHTML = h + ":" + m;
-    var t = setTimeout(runTime, 1000);
-}
-
-
-
-function checkTime(i) {
-    if (i < 10) { i = "0" + i }; // add zero in front of numbers < 10
-    return i;
-}
-
 
 //时间的倒计时
 function CountDown() {
@@ -238,10 +214,7 @@ function CountDown() {
     var ominutes = Math.floor((pasttime - ohours * 60 * 60) / 60);
     var oseconds = Math.floor(pasttime % 60);
     var oDate = new Date();
-
-    // timer2.innerHTML = oDate.getFullYear() + "年 " + (oDate.getMonth() + 1) + "月 " + oDate.getDate() + "日 " + (ohours + 9) + "时" + ominutes + "分" + oseconds + "秒";
-    timer2.innerHTML = ohours + ":" + ominutes+":"+oseconds;
-
+    timer2.innerHTML = oDate.getFullYear() + "年 " + (oDate.getMonth() + 1) + "月 " + oDate.getDate() + "日 " + (ohours + 9) + "时" + ominutes + "分" + oseconds + "秒";
     pasttime = pasttime + 1;
     if (maxtime > 0) {
         flg = true;
@@ -276,10 +249,14 @@ function CountDown() {
         alert("下班时间到了！  " + "本次游戏赚得  " + parseInt(allmoney) + "  金币");
         money.innerHTML = "本次载客收入 " + " 金币 " + "  总收入" + "  金币";
         clearInterval(timer);
-        initialize();
+        //initialize();
 
     }
 }
 
 //自动倒计时
-timer = setInterval(CountDown, 1000);
+timer = setInterval("CountDown()", 1000);
+
+function Calfee() {
+
+}
