@@ -2,32 +2,54 @@
 <html>
 
 <head>
-    <meta charset="utf-8" />
-    <meta name="viewport" content="width=device-width, initial-scale=1">
-    <title>Old Driver</title>
-    <script src="http://maps.googleapis.com/maps/api/js?key=AIzaSyDPrFpCwh0H_yt_FrA-K_RRphfLofFf7J4&sensor=false">
-    </script>
-    <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.3.1/jquery.min.js"></script>
-    <script src="https://unpkg.com/deck.gl@latest/deckgl.min.js"></script>
-    <script type="text/javascript" src="public/data/stylemap.js"></script>
-    <script type="text/javascript" src="public/built/papaparse.min.js"></script>
-    <script type="text/javascript" src="public/js/game.js"></script>
-    <script type="text/javascript" src="public/js/apicaller.js"></script>
-    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/bulma/0.7.4/css/bulma.css" crossorigin="anonymous">
-    <script defer src="https://use.fontawesome.com/releases/v5.3.1/js/all.js"></script>
-    <link rel="stylesheet" href="https://fonts.googleapis.com/css?family=Raleway">
+  <meta charset="utf-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <title>Old Driver</title>
+  <script src="http://maps.googleapis.com/maps/api/js?key=AIzaSyDPrFpCwh0H_yt_FrA-K_RRphfLofFf7J4&sensor=false">
+  </script>
+  <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.3.1/jquery.min.js"></script>
+  <script src="https://unpkg.com/deck.gl@latest/deckgl.min.js"></script>
+  <script type="text/javascript" src="public/data/stylemap.js"></script>
+  <script type="text/javascript" src="public/built/papaparse.min.js"></script>
+  <script type="text/javascript" src="public/js/game.js"></script>
+  <script type="text/javascript" src="public/js/apicaller.js"></script>
+  <!-- Bulma Version 0.7.4-->
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/bulma/0.7.4/css/bulma.min.css" crossorigin="anonymous">
+  <script defer src="https://use.fontawesome.com/releases/v5.3.1/js/all.js"></script>
+  <link rel="stylesheet" href="https://fonts.googleapis.com/css?family=Raleway">
 </head>
 <style type="text/css">
-.navbar {
-    &.is-transparent {
-        background-color: transparent;
-        background-image: none;
-    }
+/*.navbar {
+  &.is-transparent {
+    background-color: transparent;
+    background-image: none;
+  }
+}*/
+
+
+.hero .nav, .hero.is-success .nav {
+  -webkit-box-shadow: none;
+  box-shadow: none;
+}
+
+.hero-body {
+  top: 0;
 }
 
 
-.hero-body {
-    top: 0;
+#googleMap {
+  /*  position: fixed;
+  top: 0;
+  left: 0;
+  bottom:0;
+  right:0;*/
+  height: 100%;
+  width: 100%;
+  height: 100vh;
+  width: 100vw;
+  margin: 0;
+  /*z-index: -1;*/
+  /*overflow: hidden;*/
 }
 
 /*#overlay-container {
@@ -39,110 +61,197 @@
     pointer-events: none;
     background: none !important;
 }*/
+
+
+section.hero{
+    position: fixed;
+    pointer-events: none;
+    top:0;
+    width:100vw;
+}
+
+section div {
+    pointer-events: auto;
+}
+
+/*body {
+    overflow: hidden;
+}*/
+
+
 </style>
+<!-- <body onload="startTime()"> -->
 
-<body onload="startTime()">
-    <!-- <input type="file" id="csv-file" name="files"/> -->
-    <section class="hero is-fullheight">
-        <nav class="navbar is-transparent">
-            <div class="navbar-brand">
-                <a class="navbar-item"><img src="images/Logo.png" alt="Logo" /></a>
-                <a role="button" class="navbar-burger burger" aria-label="menu" aria-expanded="false" data-target="navbarBasicExample">
-      <span aria-hidden="true"></span>
-      <span aria-hidden="true"></span>
-      <span aria-hidden="true"></span>
-    </a>
+<body>
+  <div class="is-fullheight" id="googleMap"></div>
+  <!-- <input type="file" id="csv-file" name="files"/> -->
+  <section class="hero is-fullheight">
+    <div class="hero-head">
+      <nav class="navbar">
+        <!-- is-transparent -->
+        <div class="container">
+          <div class="navbar-brand">
+            <a class="navbar-item" href="../">
+              <img src="images/Logo.png" alt="Logo">
+            </a>
+            <span class="navbar-burger burger" data-target="navbarMenu">
+              <span></span>
+              <span></span>
+              <span></span>
+            </span>
+          </div>
+          <div id="navbarMenu" class="navbar-menu">
+            <div class="navbar-end">
+              <span class="navbar-item">
+                <a class="button is-white is-outlined" href="#">
+                  <span class="icon">
+                    <i class="fa fa-home"></i>
+                  </span>
+                  <span>Home</span>
+                </a>
+              </span>
+              <span class="navbar-item">
+                <a class="button is-white is-outlined" href="#">
+                  <span class="icon">
+                    <i class="fa fa-superpowers"></i>
+                  </span>
+                  <span>Examples</span>
+                </a>
+              </span>
+              <span class="navbar-item">
+                <a class="button is-white is-outlined" href="#">
+                  <span class="icon">
+                    <i class="fa fa-book"></i>
+                  </span>
+                  <span>Documentation</span>
+                </a>
+              </span>
+              <span class="navbar-item">
+                <a class="button is-white is-outlined" href="https://github.com/dansup/bulma-templates/blob/master/templates/landing.html">
+                  <span class="icon">
+                    <i class="fa fa-github"></i>
+                  </span>
+                  <span>View Source</span>
+                </a>
+              </span>
             </div>
-            <div class="navbar-menu">
-                <div class="navbar-start" style="flex-grow: 1; justify-content: center;">
-                    <a class="navbar-item" id="timer2"></a>
-                </div>
-                <div class="navbar-end">
-                    <a class="navbar-item">shopping cart</a>
-                </div>
-            </div>
-        </nav>
-        <div class="hero-body" id="googleMap">
+          </div>
         </div>
-    </section>
-    <div id="overlay-container" style="display: none">
-        <div class="widge">
-            <!-- <img id="logo" src="images/Logo.png"> -->
-            <div class="style-panel up text-panel" style="display: none">
-                <!--  You are at Union Square -->
-                <div class="text-panel">You are at</div>
-                <div id="current-place" class="text-variable">a</div>
-                <div id="current-location" class="text-variable">b</div>
-            </div>
-            <div class="style-panel up" id="desired-location">
-                <div class="text-panel" style="font-size: 14px">Where do you want to pick up?</div>
-                <div id="dest-location" class="text-variable" style="font-size: 14px;display: none">c</div>
-                <button style="position:relative;padding-left: 5%;background-color: white;color:black;border:none;margin-left: 18px" onclick="turnOnFlag()">Click on the Map</button>
-            </div>
-        </div>
-        <div class="bottom-left">
-            <!-- <div class="style-panel text-panel bottom" id="timer2"></div> -->
-            <div class="style-panel text-panel bottom" id="timer"></div>
-            <div class="style-panel text-panel bottom" id="warring"></div>
-            <div class="style-panel text-panel bottom" id="money" style="font-size: 10px"></div>
-        </div>
+      </nav>
     </div>
+    <!-- url(https://unsplash.it/1200/900?random) no-repeat center center fixed -->
+    <div class="hero-end">
+      <div class="container has-text-centered">
+        <!-- <div class="box is-fullheight"></div> -->
+        <div class="column is-6 is-offset-3">
+          <div class="box">
+            <div class="field is-grouped">
+              <p class="control is-expanded">
+                <input class="input" type="text" placeholder="From">
+              </p>
+              <p class="control" style="visibility: hidden">
+                <a class="button">Wait</a>
+              </p>
+            </div>
+            <div class="field is-grouped">
+              <p class="control is-expanded">
+                <input class="input" type="text" placeholder="To">
+              </p>
+              <p class="control">
+                <a class="button is-info">Wait</a>
+              </p>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+  </section>
+  <!--   <div id="overlay-container" style="display: none">
+    <div class="widge">
+      <div class="style-panel up text-panel" style="display: none">
+        <div class="text-panel">You are at</div>
+        <div id="current-place" class="text-variable">a</div>
+        <div id="current-location" class="text-variable">b</div>
+      </div>
+      <div class="style-panel up" id="desired-location">
+        <div class="text-panel" style="font-size: 14px">Where do you want to pick up?</div>
+        <div id="dest-location" class="text-variable" style="font-size: 14px;display: none">c</div>
+        <button style="position:relative;padding-left: 5%;background-color: white;color:black;border:none;margin-left: 18px" onclick="turnOnFlag()">Click on the Map</button>
+      </div>
+    </div>
+    <div class="bottom-left">
+      <div class="style-panel text-panel bottom" id="timer2"></div>
+      <div class="style-panel text-panel bottom" id="timer"></div>
+      <div class="style-panel text-panel bottom" id="warring"></div>
+      <div class="style-panel text-panel bottom" id="money" style="font-size: 10px"></div>
+    </div>
+  </div> -->
 </body>
-<script type="text/javascript">
-
-new deck.DeckGL({
-  // mapboxApiAccessToken: '<your_token_here>',
-  // mapStyle: 'mapbox://styles/mapbox/light-v9',
-  longitude: -122.45,
-  latitude: 37.8,
-  zoom: 12,
-  layers: [
-    new deck.ScatterplotLayer({
-      data: [
-        {position: [-122.45, 37.8], color: [255, 0, 0], radius: 100}
-      ]
-    })
-  ]
-});
-
+<script async type="text/javascript">
+// new deck.DeckGL({
+//   // mapboxApiAccessToken: '<your_token_here>',
+//   // mapStyle: 'mapbox://styles/mapbox/light-v9',
+//   longitude: -122.45,
+//   latitude: 37.8,
+//   zoom: 12,
+//   layers: [
+//     new deck.ScatterplotLayer({
+//       data: [
+//         { position: [-122.45, 37.8], color: [255, 0, 0], radius: 100 }
+//       ]
+//     })
+//   ]
+// });
 
 
-    
+
+
 var input = document.querySelector('input');
 var data;
 var isListeningClick = false;
 
 function turnOnFlag() {
-    //To enable choose pick-up location
-    isListeningClick = true;
+  //To enable choose pick-up location
+  isListeningClick = true;
 }
 
-function handleFileSelect(evt) {
-    var file = evt.target.files[0];
-    Papa.parse(file, {
-        //page will stay reactive when uploading
-        worker: true,
-        //a step callback to receive the results row-by-row
-        // step: function(row) {
-        //     // console.log("Row:", row.data);
-        // },
-        //includ header in Json
-        header: true,
-        //parse to numeric and boolean formats
-        dynamicTyping: true,
-        //The callback to execute when parsing is complete. 
-        complete: function(results, file) {
-            console.log(results);
-            savetodata(results.data);
-        }
-    });
+// function handleFileSelect(evt) {
+//   var file = evt.target.files[0];
+//   Papa.parse(file, {
+//     //page will stay reactive when uploading
+//     worker: true,
+//     //a step callback to receive the results row-by-row
+//     // step: function(row) {
+//     //     // console.log("Row:", row.data);
+//     // },
+//     //includ header in Json
+//     header: true,
+//     //parse to numeric and boolean formats
+//     dynamicTyping: true,
+//     //The callback to execute when parsing is complete. 
+//     complete: function(results, file) {
+//       console.log(results);
+//       savetodata(results.data);
+//     }
+//   });
 
-}
+// }
 
-$(document).ready(function() {
-    $("#csv-file").change(handleFileSelect);
-});
+// $(document).ready(function() {
+//   $("#csv-file").change(handleFileSelect);
+// });
 // runTime()
+// The following code is based off a toggle menu by @Bradcomp
+// source: https://gist.github.com/Bradcomp/a9ef2ef322a8e8017443b626208999c1
+(function() {
+    var burger = document.querySelector('.burger');
+    var menu = document.querySelector('#'+burger.dataset.target);
+    burger.addEventListener('click', function() {
+        burger.classList.toggle('is-active');
+        menu.classList.toggle('is-active');
+    });
+})();
+
 </script>
 
 </html>

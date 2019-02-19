@@ -69,7 +69,7 @@ function initialize() {
         streetViewControl: false,
         fullscreenControl: false,
         zoomControlOptions: {
-            position: google.maps.ControlPosition.TOP_RIGHT
+            position: google.maps.ControlPosition.RIGHT_CENTER
         },
         mapTypeId: google.maps.MapTypeId.ROADMAP,
         mapTypeControlOptions: {
