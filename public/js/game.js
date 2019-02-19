@@ -95,7 +95,7 @@ function initialize() {
   warring.innerHTML = "本次行程花费   " + "时   " + "分   " + "秒";
   money.innerHTML = "本次载客收入  " + " 金币  " + "  总收入 " + "  金币";
 
-  google.maps.event.addListener(map, 'click', function(event) {
+  google.maps.event.addListener(map, 'click', event => {
 
     if (!isListeningClick) {
       return;
@@ -110,9 +110,8 @@ function initialize() {
     getemp();
     getPlace(tmplg);
 
-    window.setTimeout(function(event) {
+    window.setTimeout(event => {
       getpass();
-
     }, 3000);
     isListeningClick = false;
 
