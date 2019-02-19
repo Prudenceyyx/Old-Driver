@@ -5,12 +5,14 @@
   <meta charset="utf-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1">
   <title>Old Driver</title>
-  <script src="http://maps.googleapis.com/maps/api/js?key=AIzaSyDPrFpCwh0H_yt_FrA-K_RRphfLofFf7J4&sensor=false">
+   <script async defer src="http://maps.googleapis.com/maps/api/js?key=AIzaSyDPrFpCwh0H_yt_FrA-K_RRphfLofFf7J4&sensor=false">
   </script>
   <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.3.1/jquery.min.js"></script>
   <script src="https://unpkg.com/deck.gl@latest/deckgl.min.js"></script>
   <script type="text/javascript" src="public/data/stylemap.js"></script>
   <script type="text/javascript" src="public/built/papaparse.min.js"></script>
+
+ 
   <script type="text/javascript" src="public/js/game.js"></script>
   <script type="text/javascript" src="public/js/apicaller.js"></script>
   <!-- Bulma Version 0.7.4-->
@@ -27,7 +29,8 @@
 }*/
 
 
-.hero .nav, .hero.is-success .nav {
+.hero .nav,
+.hero.is-success .nav {
   -webkit-box-shadow: none;
   box-shadow: none;
 }
@@ -63,22 +66,16 @@
 }*/
 
 
-section.hero{
-    position: fixed;
-    pointer-events: none;
-    top:0;
-    width:100vw;
+section.hero {
+  position: fixed;
+  pointer-events: none;
+  top: 0;
+  width: 100vw;
 }
 
 section div {
-    pointer-events: auto;
+  pointer-events: auto;
 }
-
-/*body {
-    overflow: hidden;
-}*/
-
-
 </style>
 <!-- <body onload="startTime()"> -->
 
@@ -166,7 +163,7 @@ section div {
       </div>
     </div>
   </section>
-  <!--   <div id="overlay-container" style="display: none">
+  <div id="overlay-container" style="display: none">
     <div class="widge">
       <div class="style-panel up text-panel" style="display: none">
         <div class="text-panel">You are at</div>
@@ -185,7 +182,7 @@ section div {
       <div class="style-panel text-panel bottom" id="warring"></div>
       <div class="style-panel text-panel bottom" id="money" style="font-size: 10px"></div>
     </div>
-  </div> -->
+  </div>
 </body>
 <script async type="text/javascript">
 // new deck.DeckGL({
@@ -237,21 +234,32 @@ function turnOnFlag() {
 
 // }
 
-// $(document).ready(function() {
-//   $("#csv-file").change(handleFileSelect);
-// });
+$(document).ready(function() {
+  //   $("#csv-file").change(handleFileSelect);
+
+
+  // var m = document.querySelector('div#googleMap')
+  // console.log(m)
+  // var element = document.querySelector('div.gmnoprint.gm-bundled-control');
+  // element.classList.add("is-hidden-touch")
+
+
+
+
+});
 // runTime()
 // The following code is based off a toggle menu by @Bradcomp
 // source: https://gist.github.com/Bradcomp/a9ef2ef322a8e8017443b626208999c1
 (function() {
-    var burger = document.querySelector('.burger');
-    var menu = document.querySelector('#'+burger.dataset.target);
-    burger.addEventListener('click', function() {
-        burger.classList.toggle('is-active');
-        menu.classList.toggle('is-active');
-    });
-})();
+  //Menu
+  var burger = document.querySelector('.burger');
+  var menu = document.querySelector('#' + burger.dataset.target);
+  burger.addEventListener('click', function() {
+    burger.classList.toggle('is-active');
+    menu.classList.toggle('is-active');
+  });
 
+})();
 </script>
 
 </html>
