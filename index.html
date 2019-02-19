@@ -12,7 +12,6 @@
   <script type="text/javascript" src="public/data/stylemap.js"></script>
   <script type="text/javascript" src="public/built/papaparse.min.js"></script>
 
- 
   <script type="text/javascript" src="public/js/game.js"></script>
   <script type="text/javascript" src="public/js/apicaller.js"></script>
   <!-- Bulma Version 0.7.4-->
@@ -76,10 +75,10 @@ section.hero {
 section div {
   pointer-events: auto;
 }
-</style>
-<!-- <body onload="startTime()"> -->
 
-<body>
+
+</style>
+<body onload="startTime()">
   <div class="is-fullheight" id="googleMap"></div>
   <!-- <input type="file" id="csv-file" name="files"/> -->
   <section class="hero is-fullheight">
@@ -136,7 +135,6 @@ section div {
         </div>
       </nav>
     </div>
-    <!-- url(https://unsplash.it/1200/900?random) no-repeat center center fixed -->
     <div class="hero-end">
       <div class="container has-text-centered">
         <!-- <div class="box is-fullheight"></div> -->
@@ -146,8 +144,9 @@ section div {
               <p class="control is-expanded">
                 <input class="input" type="text" placeholder="From">
               </p>
-              <p class="control" style="visibility: hidden">
-                <a class="button">Wait</a>
+              <!-- <p class="control" style="visibility: hidden"> -->
+                <p class="control">
+                <a class="button" onclick="turnOnFlag();">Click</a>
               </p>
             </div>
             <div class="field is-grouped">
@@ -199,6 +198,10 @@ section div {
 //     })
 //   ]
 // });
+
+
+// map ui ->is-hidden-touch
+
 
 
 
