@@ -108,27 +108,30 @@ function dataVisualize() {
     var layer = d3.select(overlay.getPanes().overlayLayer).append("div")
       .attr("class", "stations");
 
-    // Draw each marker as a separate SVG element.
-    // We could use a single SVG, but what size would it have?
+  //   // Draw each marker as a separate SVG element.
+  //   // We could use a single SVG, but what size would it have?
     overlay.draw = function() {
       var projection = this.getProjection(),
         padding = 10;
 
       var marker = layer.selectAll("svg")
-        .data(d3.entries(data_raw))
-        .each(transform) // update existing markers
+        .data(d3.entries(data_raw["features"]))
+  //       .each(transform) // update existing markers
         .enter().append("svg")
         .each(transform)
         .attr("class", "marker");
 
-      // Add a circle.
+  //     // Add a circle.
       marker.append("circle")
         .attr("r", 4.5)
         .attr("cx", padding)
         .attr("cy", padding);
 
       function transform(d) {
-        d = new google.maps.LatLng(d.value[1], d.value[0]);
+        // console.log(d.value.geometry)
+        let lat = d.value.geometry.coordinates[0]; 
+        let lng = d.value.geometry.coordinates[1]; 
+        d = new google.maps.LatLng(lat, lng);
         d = projection.fromLatLngToDivPixel(d);
         return d3.select(this)
           .style("left", (d.x - padding) + "px")
@@ -159,18 +162,42 @@ function getCircle(magnitude) {
 
 function getPlace(loc) {
   //Given loc, change id="current-place" content
-  $.ajax({
-    url: 'https://maps.google.com/maps/api/geocode/json?key=AIzaSyBzE9xAESye6Kde-3hT-6B90nfwUkcS8Yw&latlng=' + loc.lat() + ',' + loc.lng() + '&language=en&result_type=street_address&sensor=false',
-    type: 'get',
-    dataType: 'json',
-    success: function(resp) {
-      if (resp['status'] === 'OK') {
-        // document.getElementById("current-place").innerHTML = resp.results[2].address_components[0].long_name;
-      } else {
-        console.log(resp)
-      }
+  // $.ajax({
+  //   url: 'https://maps.google.com/maps/api/geocode/json?key=AIzaSyBzE9xAESye6Kde-3hT-6B90nfwUkcS8Yw&latlng=' + loc.lat() + ',' + loc.lng() + '&language=en&result_type=street_address&sensor=false',
+  //   type: 'get',
+  //   dataType: 'json',
+  //   success: function(resp) {
+  //     if (resp['status'] === 'OK') {
+  //       // document.getElementById("current-place").innerHTML = resp.results[2].address_components[0].long_name;
+  //     } else {
+  //       console.log(resp)
+  //     }
+  //   }
+  // });
+
+
+  var request = new XMLHttpRequest();
+  var url = `https://maps.google.com/maps/api/geocode/json?key=AIzaSyBzE9xAESye6Kde-3hT-6B90nfwUkcS8Yw&latlng=${loc.lat()},${loc.lng()}&language=en&result_type=street_address&sensor=false`;
+  request.responseType = 'json';
+  request.open('GET', url, true);
+
+  request.onload = function() {
+    if (request.status >= 200 && request.status < 400) {
+      // Success!
+      // var resp = request.responseText;
+    } else {
+      // We reached our target server, but it returned an error
+      console.log(request)
+
     }
-  });
+  };
+
+  request.onerror = function() {
+    // There was a connection error of some sort
+  };
+
+  request.send();
+
 }
 
 function displayLoc(lstlg) {
