@@ -13,8 +13,8 @@
   <script type="text/javascript" src="public/data/stylemap.js"></script>
   <script type="text/javascript" src="public/built/papaparse.min.js"></script>
   <script type="text/javascript" src="public/data/earthquake_big.js"></script>
-  <script type="text/javascript" src="public/js/game.js"></script>
-  <script type="text/javascript" src="public/js/apicaller.js"></script>
+  <!-- <script type="text/javascript" src="public/js/game.js"></script> -->
+  <!-- <script type="text/javascript" src="public/js/apicaller.js"></script> -->
   <!-- Bulma Version 0.7.4-->
   <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/bulma/0.7.4/css/bulma.min.css" crossorigin="anonymous">
   <script defer src="https://use.fontawesome.com/releases/v5.3.1/js/all.js"></script>
@@ -78,7 +78,8 @@ section div {
 }
 </style>
 
-<body onload="startTime()">
+<body onload="">
+  <!-- startTime() -->
   <div class="is-fullheight" id="googleMap"></div>
   <!-- <input type="file" id="csv-file" name="files"/> -->
   <section class="hero is-fullheight">
@@ -146,7 +147,8 @@ section div {
               </p>
               <!-- <p class="control" style="visibility: hidden"> -->
               <p class="control">
-                <a class="button" onclick="turnOnFlag();">Click</a>
+                <a class="button" onclick="">Click</a>
+                <!-- turnOnFlag(); -->
               </p>
             </div>
             <div class="field is-grouped">
@@ -162,7 +164,11 @@ section div {
       </div>
     </div>
   </section>
-  <div id="overlay-container" style="display: none">
+
+
+
+  
+<!--   <div id="overlay-container" style="display: none">
     <div class="widge">
       <div class="style-panel up text-panel" style="display: none">
         <div class="text-panel">You are at</div>
@@ -181,29 +187,9 @@ section div {
       <div class="style-panel text-panel bottom" id="warring"></div>
       <div class="style-panel text-panel bottom" id="money" style="font-size: 10px"></div>
     </div>
-  </div>
+  </div> -->
 </body>
 <script async type="text/javascript">
-// new deck.DeckGL({
-//   // mapboxApiAccessToken: '<your_token_here>',
-//   // mapStyle: 'mapbox://styles/mapbox/light-v9',
-//   longitude: -122.45,
-//   latitude: 37.8,
-//   zoom: 12,
-//   layers: [
-//     new deck.ScatterplotLayer({
-//       data: [
-//         { position: [-122.45, 37.8], color: [255, 0, 0], radius: 100 }
-//       ]
-//     })
-//   ]
-// });
-
-
-// map ui ->is-hidden-touch
-
-
-
 
 
 var input = document.querySelector('input');
@@ -237,19 +223,6 @@ function turnOnFlag() {
 
 // }
 
-$(document).ready(function() {
-  //   $("#csv-file").change(handleFileSelect);
-
-
-  // var m = document.querySelector('div#googleMap')
-  // console.log(m)
-  // var element = document.querySelector('div.gmnoprint.gm-bundled-control');
-  // element.classList.add("is-hidden-touch")
-
-
-
-
-});
 // runTime()
 // The following code is based off a toggle menu by @Bradcomp
 // source: https://gist.github.com/Bradcomp/a9ef2ef322a8e8017443b626208999c1

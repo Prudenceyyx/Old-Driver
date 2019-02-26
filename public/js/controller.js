@@ -1,19 +1,23 @@
 var GameController = {
-    onstart:;
-    onrunning:;
-    onend:;
+  start: () => {
+    // initialize()
+    TimeController.start();
+    MapController.start();
+  };
+  onrunning:;
+  onend:;
 
 }
 
 var TimeController = {
-    onstart:;
-    onrunning:;
-    onend:;
+  start:;
+  onrunning:;
+  onend:;
 }
 
 
-var VizController = {
-    onstart:;
-    onrunning:;
+var MapController = {
+  start:;
+  onrunning:;
 
 }

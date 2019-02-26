@@ -1,0 +1,47 @@
+<html>
+
+<head>
+  <script src="https://unpkg.com/deck.gl@~5.2.0/deckgl.min.js"></script>
+  <script type="text/javascript" src="public/data/earthquake_big.js"></script>
+  <!-- only if base map is needed -->
+  <script src="https://api.tiles.mapbox.com/mapbox-gl-js/v0.44.1/mapbox-gl.js"></script>
+  <link href="https://api.tiles.mapbox.com/mapbox-gl-js/v0.44.1/mapbox-gl.css" rel="stylesheet" />
+</head>
+
+<body>
+  <div id="container" style="width: 100vw; height: 100vh;"></div>
+</body>
+<script type="text/javascript">
+const deckgl = new deck.DeckGL({
+  container: 'container',
+  mapboxApiAccessToken: 'pk.eyJ1IjoicHJ1ZGVuY2V5eXgiLCJhIjoiY2pzaWd2MG1pMW1yZzQ5cWdleGtxdHByOCJ9._iDU8XV5SPRY2hGmVPvCKg',
+  mapStyle: 'mapbox://styles/mapbox/light-v9',
+  longitude: -74.0059731,
+  latitude: 40.7143528,
+  zoom: 13,
+  layers: []
+});
+
+function updateLayers(data) {
+  return new deck.ScatterplotLayer({
+    /* unique id of this layer */
+    id: 'checkins',
+    /* data: an array of objects */
+    data,
+    /* data accessors */
+    getPosition: d => d["geometry"]["coordinates"], // returns longitude, latitude, [altitude]
+    getRadius: d => 10 * d["properties"]["cdi"], // returns radius in meters
+    getColor: d => [255, 200, 0, 100] // returns R, G, B, [A] in 0-255 range
+  })
+
+}
+
+// Layers can be added, removed or updated at any time:
+var data = data_raw["features"]
+
+deckgl.setProps({ layers: [updateLayers(data)] })
+
+
+</script>
+
+</html>
