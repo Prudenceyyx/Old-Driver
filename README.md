@@ -6,6 +6,7 @@ For 2018 Google Girl Hackathon IV in Shanghai
 ### Improvement (WIP in css branch)
 - [x] Content-security using HTTPS
 - [x] Reduce loading time by making logo icon small
+- [x] Use deck.gl visualization instead of Google Map integration, consequently move to Mapbox Integration
 - [ ] Unify UI and transform to responsive web design by adopting Bulma CSS framework
 - [ ] Add game instruction
 
