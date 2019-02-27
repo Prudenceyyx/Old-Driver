@@ -1,11 +1,11 @@
 <html>
 
 <head>
-  <script src="https://unpkg.com/deck.gl@~5.2.0/deckgl.min.js"></script>
+  <script src="https://unpkg.com/deck.gl@~6.2.0/deckgl.min.js"></script>
   <script type="text/javascript" src="public/data/earthquake_big.js"></script>
   <!-- only if base map is needed -->
-  <script src="https://api.tiles.mapbox.com/mapbox-gl-js/v0.44.1/mapbox-gl.js"></script>
-  <link href="https://api.tiles.mapbox.com/mapbox-gl-js/v0.44.1/mapbox-gl.css" rel="stylesheet" />
+  <script src="https://api.tiles.mapbox.com/mapbox-gl-js/v0.50.0/mapbox-gl.js"></script>
+  <link href="https://api.tiles.mapbox.com/mapbox-gl-js/v0.50.0/mapbox-gl.css" rel="stylesheet" />
 </head>
 
 <body>
@@ -13,6 +13,10 @@
 </body>
 <script type="text/javascript">
 //https://medium.com/vis-gl/start-scripting-with-deck-gl-c9036d7a6011
+// deck.gl and Mapbox GL JS: Better Together
+// https://medium.com/vis-gl/deckgl-and-mapbox-better-together-47b29d6d4fb1
+const { MapboxLayer, ScatterplotLayer, PathLayer, IconLayer } = deck;
+
 var start = [-74.0059731, 40.7143528]
 
 var end = [-73.9973, 40.7308]
@@ -21,6 +25,16 @@ var end = [-73.9973, 40.7308]
 var data = data_raw["features"]
 
 var mapboxApiAccessToken = 'pk.eyJ1IjoicHJ1ZGVuY2V5eXgiLCJhIjoiY2pzaWd2MG1pMW1yZzQ5cWdleGtxdHByOCJ9._iDU8XV5SPRY2hGmVPvCKg';
+
+
+mapboxgl.accessToken = mapboxApiAccessToken;
+
+const map = new mapboxgl.Map({
+  container: 'container',
+  style: 'mapbox://styles/mapbox/light-v9',
+  center: start,
+  zoom: 13
+});
 
 //Define layers attribute
 var layers = {
@@ -37,32 +51,56 @@ layers.getlist = function() {
   });
 }
 
-const deckgl = new deck.DeckGL({
-  container: 'container',
-  mapboxApiAccessToken: mapboxApiAccessToken,
-  mapStyle: 'mapbox://styles/mapbox/light-v9',
-  longitude: start[0],
-  latitude: start[1],
-  zoom: 13,
-  onLayerClick: event => {
-    console.log(event)
-  },
-  layers: layers.getlist(),
+// const deckgl = new deck.DeckGL({
+//   container: 'container',
+//   mapboxApiAccessToken: mapboxApiAccessToken,
+//   mapStyle: 'mapbox://styles/mapbox/light-v9',
+//   longitude: start[0],
+//   latitude: start[1],
+//   zoom: 13,
+//   onLayerClick: event => {
+//     console.log(event)
+//   },
+//   layers: layers.getlist(),
 
-});
+// });
 
 function updateScatterLayer(data) {
-  return new deck.ScatterplotLayer({
+  // return new deck.ScatterplotLayer({
+  //   /* unique id of this layer */
+  //   id: 'checkins',
+  //   /* data: an array of objects */
+  //   data,
+  //   /* data accessors */
+  //   getPosition: d => d["geometry"]["coordinates"], // returns longitude, latitude, [altitude]
+  //   getRadius: d => 10 * d["properties"]["cdi"], // returns radius in meters
+  //   getColor: d => [255, 200, 0, 100] // returns R, G, B, [A] in 0-255 range
+  // })
+  return new MapboxLayer({
     /* unique id of this layer */
     id: 'checkins',
+    type: ScatterplotLayer,
     /* data: an array of objects */
-    data,
+    data: data,
     /* data accessors */
     getPosition: d => d["geometry"]["coordinates"], // returns longitude, latitude, [altitude]
     getRadius: d => 10 * d["properties"]["cdi"], // returns radius in meters
     getColor: d => [255, 200, 0, 100] // returns R, G, B, [A] in 0-255 range
   })
 }
+// Create a mapbox-compatible deck.gl layer
+const myDeckLayer = new MapboxLayer({
+  id: 'my-scatterplot',
+  type: ScatterplotLayer,
+  data: [
+    { position: end, size: 100 }
+  ],
+  getPosition: d => d.position,
+  getRadius: d => d.size,
+  getColor: [255, 0, 0]
+});
+
+
 
 function updateRouteLayer(data) {
   /**
@@ -76,12 +114,13 @@ function updateRouteLayer(data) {
    *   ...
    * ]
    */
-  // console.log(data)
-  return new deck.PathLayer({
+
+  return new MapboxLayer({
     /* unique id of this layer */
     id: 'path-layer',
+    type: PathLayer,
     /* data: an array of objects */
-    data,
+    data: data,
     /* data accessors */
     widthScale: 20,
     widthMinPixels: 2,
@@ -92,10 +131,7 @@ function updateRouteLayer(data) {
     },
     // getColor: d => colorToRGBArray(d.color),
     getColor: d => [0, 0, 255, 100],
-    getWidth: d => 2,
-    // onClick:info=>{
-    //   console.log(info)
-    // }
+    getWidth: d => 2
   })
 }
 
@@ -110,110 +146,80 @@ function updateIconLayer(data) {
   const ICON_MAPPING = {
     marker: { x: 0, y: 0, width: 32, height: 32, mask: false }
   };
-  return new IconLayer({
+  return new MapboxLayer({
     id: 'icon-layer',
+    type: IconLayer,
     data,
     // iconAtlas and iconMapping are required
     // getIcon: return a string
     iconAtlas: 'images/car_30_past.png',
     iconMapping: ICON_MAPPING,
     getIcon: d => 'marker',
-    sizeScale: 15,
+    sizeScale: 12,
     getPosition: d => d.location,
     getSize: d => 5,
     // getColor: d => [0, 140, 0],
-    onHover: ({ object, x, y }) => {
-      // const tooltip = `${object.name}\n${object.address}`;
-      /* Update tooltip
-         http://deck.gl/#/documentation/developer-guide/adding-interactivity?section=example-display-a-tooltip-for-hovered-object
-      */
-    },
-    // onClick:info=>{
-    //   console.log(info)
-    // }
   });
 }
 
 
-var map = deckgl.getMapboxMap()
-// create a function to make a directions request
-function getRoute(end) {
+function getRoute(input_end, cb) {
   // make a directions request using cycling profile
   // an arbitrary start will always be the same
   // only the end or destination will change
-  // var end = [-122.662323, 45.523751];
-  var url = 'https://api.mapbox.com/directions/v5/mapbox/cycling/' + start[0] + ',' + start[1] + ';' + end[0] + ',' + end[1] + '?steps=true&geometries=geojson&access_token=' + mapboxApiAccessToken;
+  if (input_end == start) {
+    end = input_end;
+  } else if (end != input_end) {
+    start = end;
+    end = input_end;
+  }
+
+  var url = 'https://api.mapbox.com/directions/v5/mapbox/cycling/' + start[0] + ',' + start[1] + ';' + input_end[0] + ',' + input_end[1] + '?steps=true&geometries=geojson&access_token=' + mapboxApiAccessToken;
 
   // make an XHR request https://developer.mozilla.org/en-US/docs/Web/API/XMLHttpRequest
   var req = new XMLHttpRequest();
   req.responseType = 'json';
   req.open('GET', url, true);
-
   req.onload = () => {
-    var data = req.response.routes[0];
-    var route = [data.geometry]
-    console.log(data)
-    //Update layer
-    layers.path = updateRouteLayer(route);
-    layers.icon = updateIconLayer(req.response.waypoints)
-    deckgl.setProps({ layers: layers.getlist() })
+    if (cb) cb(req.response);
   }
 
   req.send();
 }
 
+var route_layer, icon_layer;
+
 map.on('load', function() {
   // make an initial directions request that starts and ends at the same location
-  getRoute(end);
+  getRoute(start, data => {
+    //Parse data
+    let routes = [data.routes[0].geometry]
+    let startEnd = data.waypoints;
+
+    //Initialize route and icon
+    route_layer = updateRouteLayer(routes);
+    icon_layer = updateIconLayer(startEnd);
+    map.addLayer(route_layer);
+    map.addLayer(icon_layer);
+  });
 
 });
 
-map.on('click', e => {
-  console.log(e)
-//   var coordsObj = e.lngLat;
-//   canvas.style.cursor = '';
-//   var coords = Object.keys(coordsObj).map(key => {
-//     return coordsObj[key];
-//   });
-//   var end = {
-//     type: 'FeatureCollection',
-//     features: [{
-//       type: 'Feature',
-//       properties: {},
-//       geometry: {
-//         type: 'Point',
-//         coordinates: coords
-//       }
-//     }]
-//   };
-//   if (map.getLayer('end')) {
-//     map.getSource('end').setData(end);
-//   } else {
-//     map.addLayer({
-//       id: 'end',
-//       type: 'circle',
-//       source: {
-//         type: 'geojson',
-//         data: {
-//           type: 'FeatureCollection',
-//           features: [{
-//             type: 'Feature',
-//             properties: {},
-//             geometry: {
-//               type: 'Point',
-//               coordinates: coords
-//             }
-//           }]
-//         }
-//       },
-//       paint: {
-//         'circle-radius': 10,
-//         'circle-color': '#f30'
-//       }
-//     });
-//   }
-//   getRoute(coords);
-});
+map.on('click', event => {
+  //Pick a location as the new end
+  let position = event.lngLat;
+
+  getRoute([position.lng, position.lat], data => {
+    //Parse data
+    let routes = [data.routes[0].geometry]
+    let startEnd = data.waypoints;
+
+    //Update route and icon
+    route_layer.setProps({ data: routes })
+    icon_layer.setProps({ data: startEnd })
+
+  })
+})
 </script>
 
 </html>
