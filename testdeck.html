@@ -6,10 +6,113 @@
   <!-- only if base map is needed -->
   <script src="https://api.tiles.mapbox.com/mapbox-gl-js/v0.50.0/mapbox-gl.js"></script>
   <link href="https://api.tiles.mapbox.com/mapbox-gl-js/v0.50.0/mapbox-gl.css" rel="stylesheet" />
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/bulma/0.7.4/css/bulma.min.css" crossorigin="anonymous">
 </head>
+<style type="text/css">
+.hero .nav,
+.hero.is-success .nav {
+  -webkit-box-shadow: none;
+  box-shadow: none;
+}
+
+.hero-body {
+  top: 0;
+}
+
+#container {
+  /*  height: 100%;
+  width: 100%;
+  height: 100vh;
+  width: 100vw;*/
+  position: absolute;
+  margin: 0;
+}
+</style>
 
 <body>
-  <div id="container" style="width: 100vw; height: 100vh;"></div>
+  <div class="is-fullheight" id="container" style="width: 100vw; height: 100vh;"></div>
+  <section class="hero is-fullheight">
+    <div class="hero-head">
+      <nav class="navbar">
+        <!-- is-transparent -->
+        <div class="container">
+          <div class="navbar-brand">
+            <a class="navbar-item" href="../">
+              <img src="images/Logo.png" alt="Logo">
+            </a>
+            <span class="navbar-burger burger" data-target="navbarMenu">
+              <span></span>
+              <span></span>
+              <span></span>
+            </span>
+          </div>
+          <div id="navbarMenu" class="navbar-menu">
+            <div class="navbar-end">
+              <span class="navbar-item">
+                <a class="button is-white is-outlined" href="#">
+                  <span class="icon">
+                    <i class="fa fa-home"></i>
+                  </span>
+                  <span>Home</span>
+                </a>
+              </span>
+              <span class="navbar-item">
+                <a class="button is-white is-outlined" href="#">
+                  <span class="icon">
+                    <i class="fa fa-superpowers"></i>
+                  </span>
+                  <span>Examples</span>
+                </a>
+              </span>
+              <span class="navbar-item">
+                <a class="button is-white is-outlined" href="#">
+                  <span class="icon">
+                    <i class="fa fa-book"></i>
+                  </span>
+                  <span>Documentation</span>
+                </a>
+              </span>
+              <span class="navbar-item">
+                <a class="button is-white is-outlined" href="https://github.com/dansup/bulma-templates/blob/master/templates/landing.html">
+                  <span class="icon">
+                    <i class="fa fa-github"></i>
+                  </span>
+                  <span>View Source</span>
+                </a>
+              </span>
+            </div>
+          </div>
+        </div>
+      </nav>
+    </div>
+    <div class="hero-end">
+      <div class="container has-text-centered">
+        <!-- <div class="box is-fullheight"></div> -->
+        <div class="column is-6 is-offset-3">
+          <div class="box">
+            <div class="field is-grouped">
+              <p class="control is-expanded">
+                <input class="input" type="text" placeholder="From">
+              </p>
+              <!-- <p class="control" style="visibility: hidden"> -->
+              <p class="control">
+                <a class="button" onclick="">Click</a>
+                <!-- turnOnFlag(); -->
+              </p>
+            </div>
+            <div class="field is-grouped">
+              <p class="control is-expanded">
+                <input class="input" type="text" placeholder="To">
+              </p>
+              <p class="control">
+                <a class="button is-info">Wait</a>
+              </p>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+  </section>
 </body>
 <script type="text/javascript">
 //https://medium.com/vis-gl/start-scripting-with-deck-gl-c9036d7a6011
@@ -25,7 +128,6 @@ var end = [-73.9973, 40.7308]
 var data = data_raw["features"]
 
 var mapboxApiAccessToken = 'pk.eyJ1IjoicHJ1ZGVuY2V5eXgiLCJhIjoiY2pzaWd2MG1pMW1yZzQ5cWdleGtxdHByOCJ9._iDU8XV5SPRY2hGmVPvCKg';
-
 
 mapboxgl.accessToken = mapboxApiAccessToken;
 
@@ -51,31 +153,7 @@ layers.getlist = function() {
   });
 }
 
-// const deckgl = new deck.DeckGL({
-//   container: 'container',
-//   mapboxApiAccessToken: mapboxApiAccessToken,
-//   mapStyle: 'mapbox://styles/mapbox/light-v9',
-//   longitude: start[0],
-//   latitude: start[1],
-//   zoom: 13,
-//   onLayerClick: event => {
-//     console.log(event)
-//   },
-//   layers: layers.getlist(),
-
-// });
-
 function updateScatterLayer(data) {
-  // return new deck.ScatterplotLayer({
-  //   /* unique id of this layer */
-  //   id: 'checkins',
-  //   /* data: an array of objects */
-  //   data,
-  //   /* data accessors */
-  //   getPosition: d => d["geometry"]["coordinates"], // returns longitude, latitude, [altitude]
-  //   getRadius: d => 10 * d["properties"]["cdi"], // returns radius in meters
-  //   getColor: d => [255, 200, 0, 100] // returns R, G, B, [A] in 0-255 range
-  // })
   return new MapboxLayer({
     /* unique id of this layer */
     id: 'checkins',
@@ -101,7 +179,6 @@ const myDeckLayer = new MapboxLayer({
 });
 
 
-
 function updateRouteLayer(data) {
   /**
    * Data format:
@@ -114,7 +191,6 @@ function updateRouteLayer(data) {
    *   ...
    * ]
    */
-
   return new MapboxLayer({
     /* unique id of this layer */
     id: 'path-layer',
@@ -125,10 +201,7 @@ function updateRouteLayer(data) {
     widthScale: 20,
     widthMinPixels: 2,
     rounded: true,
-    getPath: d => {
-      console.log(d.coordinates)
-      return d.coordinates
-    },
+    getPath: d => d.coordinates,
     // getColor: d => colorToRGBArray(d.color),
     getColor: d => [0, 0, 255, 100],
     getWidth: d => 2
@@ -150,15 +223,16 @@ function updateIconLayer(data) {
     id: 'icon-layer',
     type: IconLayer,
     data,
-    // iconAtlas and iconMapping are required
-    // getIcon: return a string
-    iconAtlas: 'images/car_30_past.png',
-    iconMapping: ICON_MAPPING,
     getIcon: d => 'marker',
+    iconAtlas: 'images/car_30.png',
+    iconMapping: ICON_MAPPING,
     sizeScale: 12,
     getPosition: d => d.location,
     getSize: d => 5,
-    // getColor: d => [0, 140, 0],
+    getColor: d => {
+      if (d.icon == 'past') return [100, 100, 100, 150];
+      return [0, 0, 0, 255]
+    },
   });
 }
 
@@ -181,7 +255,10 @@ function getRoute(input_end, cb) {
   req.responseType = 'json';
   req.open('GET', url, true);
   req.onload = () => {
-    if (cb) cb(req.response);
+    let data = req.response
+    data.waypoints[0].icon = 'past';
+    data.waypoints[1].icon = 'marker';
+    if (cb) cb(data);
   }
 
   req.send();
@@ -213,13 +290,27 @@ map.on('click', event => {
     //Parse data
     let routes = [data.routes[0].geometry]
     let startEnd = data.waypoints;
+    // console.log(startEnd)
 
     //Update route and icon
     route_layer.setProps({ data: routes })
     icon_layer.setProps({ data: startEnd })
 
   })
-})
+});
+
+// The following code is based off a toggle menu by @Bradcomp
+// source: https://gist.github.com/Bradcomp/a9ef2ef322a8e8017443b626208999c1
+(function() {
+  //Menu
+  var burger = document.querySelector('.burger');
+  var menu = document.querySelector('#' + burger.dataset.target);
+  burger.addEventListener('click', function() {
+    burger.classList.toggle('is-active');
+    menu.classList.toggle('is-active');
+  });
+
+})();
 </script>
 
 </html>
