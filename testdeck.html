@@ -12,20 +12,46 @@
   <div id="container" style="width: 100vw; height: 100vh;"></div>
 </body>
 <script type="text/javascript">
-
+//https://medium.com/vis-gl/start-scripting-with-deck-gl-c9036d7a6011
 var start = [-74.0059731, 40.7143528]
+
+var end = [-73.9973, 40.7308]
+
+// Layers can be added, removed or updated at any time:
+var data = data_raw["features"]
+
+var mapboxApiAccessToken = 'pk.eyJ1IjoicHJ1ZGVuY2V5eXgiLCJhIjoiY2pzaWd2MG1pMW1yZzQ5cWdleGtxdHByOCJ9._iDU8XV5SPRY2hGmVPvCKg';
+
+//Define layers attribute
+var layers = {
+  scatter: undefined,
+  path: undefined,
+  icon: undefined,
+};
+
+//Define layers method
+//otherwise 'this' is not assigned yet
+layers.getlist = function() {
+  return [this.scatter, this.path, this.icon].filter(ele => {
+    if (ele) return true
+  });
+}
 
 const deckgl = new deck.DeckGL({
   container: 'container',
-  mapboxApiAccessToken: 'pk.eyJ1IjoicHJ1ZGVuY2V5eXgiLCJhIjoiY2pzaWd2MG1pMW1yZzQ5cWdleGtxdHByOCJ9._iDU8XV5SPRY2hGmVPvCKg',
+  mapboxApiAccessToken: mapboxApiAccessToken,
   mapStyle: 'mapbox://styles/mapbox/light-v9',
   longitude: start[0],
   latitude: start[1],
   zoom: 13,
-  layers: []
+  onLayerClick: event => {
+    console.log(event)
+  },
+  layers: layers.getlist(),
+
 });
 
-function updateLayers(data) {
+function updateScatterLayer(data) {
   return new deck.ScatterplotLayer({
     /* unique id of this layer */
     id: 'checkins',
@@ -36,101 +62,157 @@ function updateLayers(data) {
     getRadius: d => 10 * d["properties"]["cdi"], // returns radius in meters
     getColor: d => [255, 200, 0, 100] // returns R, G, B, [A] in 0-255 range
   })
-
 }
 
-// Layers can be added, removed or updated at any time:
-var data = data_raw["features"]
+function updateRouteLayer(data) {
+  /**
+   * Data format:
+   * [
+   *   {
+   *     path: [[-122.4, 37.7], [-122.5, 37.8], [-122.6, 37.85]],
+   *     name: 'Richmond - Millbrae',
+   *     color: [255, 0, 0]
+   *   },
+   *   ...
+   * ]
+   */
+  // console.log(data)
+  return new deck.PathLayer({
+    /* unique id of this layer */
+    id: 'path-layer',
+    /* data: an array of objects */
+    data,
+    /* data accessors */
+    widthScale: 20,
+    widthMinPixels: 2,
+    rounded: true,
+    getPath: d => {
+      console.log(d.coordinates)
+      return d.coordinates
+    },
+    // getColor: d => colorToRGBArray(d.color),
+    getColor: d => [0, 0, 255, 100],
+    getWidth: d => 2,
+    // onClick:info=>{
+    //   console.log(info)
+    // }
+  })
+}
 
-deckgl.setProps({ layers: [updateLayers(data)] })
+function updateIconLayer(data) {
+  /**
+   * Data format:
+   * [
+   *   {name: 'Colma (COLM)', address: '365 D Street, Colma CA 94014', exits: 4214, coordinates: [-122.466233, 37.684638]},
+   *   ...
+   * ]
+   */
+  const ICON_MAPPING = {
+    marker: { x: 0, y: 0, width: 32, height: 32, mask: false }
+  };
+  return new IconLayer({
+    id: 'icon-layer',
+    data,
+    // iconAtlas and iconMapping are required
+    // getIcon: return a string
+    iconAtlas: 'images/car_30_past.png',
+    iconMapping: ICON_MAPPING,
+    getIcon: d => 'marker',
+    sizeScale: 15,
+    getPosition: d => d.location,
+    getSize: d => 5,
+    // getColor: d => [0, 140, 0],
+    onHover: ({ object, x, y }) => {
+      // const tooltip = `${object.name}\n${object.address}`;
+      /* Update tooltip
+         http://deck.gl/#/documentation/developer-guide/adding-interactivity?section=example-display-a-tooltip-for-hovered-object
+      */
+    },
+    // onClick:info=>{
+    //   console.log(info)
+    // }
+  });
+}
 
 
+var map = deckgl.getMapboxMap()
 // create a function to make a directions request
 function getRoute(end) {
   // make a directions request using cycling profile
   // an arbitrary start will always be the same
   // only the end or destination will change
   // var end = [-122.662323, 45.523751];
-  var url = 'https://api.mapbox.com/directions/v5/mapbox/cycling/' + start[0] + ',' + start[1] + ';' + end[0] + ',' + end[1] + '?steps=true&geometries=geojson&access_token=' + mapboxgl.accessToken;
+  var url = 'https://api.mapbox.com/directions/v5/mapbox/cycling/' + start[0] + ',' + start[1] + ';' + end[0] + ',' + end[1] + '?steps=true&geometries=geojson&access_token=' + mapboxApiAccessToken;
 
   // make an XHR request https://developer.mozilla.org/en-US/docs/Web/API/XMLHttpRequest
   var req = new XMLHttpRequest();
   req.responseType = 'json';
   req.open('GET', url, true);
-  req.onload = function() {
+
+  req.onload = () => {
     var data = req.response.routes[0];
-    var route = data.geometry.coordinates;
-    var geojson = {
-      type: 'Feature',
-      properties: {},
-      geometry: {
-        type: 'LineString',
-        coordinates: route
-      }
-    };
-    // if the route already exists on the map, reset it using setData
-    if (map.getSource('route')) {
-      map.getSource('route').setData(geojson);
-    } else { // otherwise, make a new request
-      map.addLayer({
-        id: 'route',
-        type: 'line',
-        source: {
-          type: 'geojson',
-          data: {
-            type: 'Feature',
-            properties: {},
-            geometry: {
-              type: 'LineString',
-              coordinates: geojson
-            }
-          }
-        },
-        layout: {
-          'line-join': 'round',
-          'line-cap': 'round'
-        },
-        paint: {
-          'line-color': '#3887be',
-          'line-width': 5,
-          'line-opacity': 0.75
-        }
-      });
-    }
-    // add turn instructions here at the end
-  };
+    var route = [data.geometry]
+    console.log(data)
+    //Update layer
+    layers.path = updateRouteLayer(route);
+    layers.icon = updateIconLayer(req.response.waypoints)
+    deckgl.setProps({ layers: layers.getlist() })
+  }
+
   req.send();
 }
 
 map.on('load', function() {
-  // make an initial directions request that
-  // starts and ends at the same location
-  getRoute(start);
+  // make an initial directions request that starts and ends at the same location
+  getRoute(end);
 
-  // Add starting point to the map
-  map.addLayer({
-    id: 'point',
-    type: 'circle',
-    source: {
-      type: 'geojson',
-      data: {
-        type: 'FeatureCollection',
-        features: [{
-          type: 'Feature',
-          properties: {},
-          geometry: {
-            type: 'Point',
-            coordinates: start
-          }
-        }]
-      }
-    },
-    paint: {
-      'circle-radius': 10,
-      'circle-color': '#3887be'
-    }
-  });
-  // this is where the code from the next step will go
+});
+
+map.on('click', e => {
+  console.log(e)
+//   var coordsObj = e.lngLat;
+//   canvas.style.cursor = '';
+//   var coords = Object.keys(coordsObj).map(key => {
+//     return coordsObj[key];
+//   });
+//   var end = {
+//     type: 'FeatureCollection',
+//     features: [{
+//       type: 'Feature',
+//       properties: {},
+//       geometry: {
+//         type: 'Point',
+//         coordinates: coords
+//       }
+//     }]
+//   };
+//   if (map.getLayer('end')) {
+//     map.getSource('end').setData(end);
+//   } else {
+//     map.addLayer({
+//       id: 'end',
+//       type: 'circle',
+//       source: {
+//         type: 'geojson',
+//         data: {
+//           type: 'FeatureCollection',
+//           features: [{
+//             type: 'Feature',
+//             properties: {},
+//             geometry: {
+//               type: 'Point',
+//               coordinates: coords
+//             }
+//           }]
+//         }
+//       },
+//       paint: {
+//         'circle-radius': 10,
+//         'circle-color': '#f30'
+//       }
+//     });
+//   }
+//   getRoute(coords);
 });
 </script>
 
