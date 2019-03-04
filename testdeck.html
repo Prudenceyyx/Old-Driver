@@ -127,6 +127,51 @@ var end = [-73.9973, 40.7308]
 // Layers can be added, removed or updated at any time:
 var data = data_raw["features"]
 
+
+var GameTime = {
+  startTime: null,
+  currentTime: null,
+  running: null,
+  start: () => {
+    this.startTime = new Date();
+  },
+
+  checkEnd: () => {
+    let now = new Date();
+    this.currentTime = new Date(now - this.startTime);
+    return this.currentTime.getUTCHours() >= 8;
+  },
+  end: () => {
+    clearTimeout(this.running)
+  },
+  run: () => {
+    if (this.startTime == null) this.start();
+
+    this.running = setInterval(() => {
+      let now = new Date();
+
+      this.currentTime = new Date(now - this.startTime);
+      //Get universal time to avoid local time
+      console.log(this.currentTime.getUTCHours(), this.currentTime.getUTCMinutes(), this.currentTime.getUTCSeconds())
+
+      // console.log(typeof this.checkEnd)
+
+      // if (this.checkEnd()) this.end();
+    }, 1000);
+  },
+  update: (seconds) => {
+    if (this.startTime == null) this.start();
+    if (this.currentTime == null) this.run();
+    let duration = new Date(seconds);
+    this.startTime.setMinutes(this.startTime.getMinutes() - duration.getUTCMinutes());
+    this.startTime.setSeconds(this.startTime.getSeconds() - duration.getUTCSeconds());
+
+    // if (this.checkEnd()) this.end();
+
+  }
+}
+
+
 var mapboxApiAccessToken = 'pk.eyJ1IjoicHJ1ZGVuY2V5eXgiLCJhIjoiY2pzaWd2MG1pMW1yZzQ5cWdleGtxdHByOCJ9._iDU8XV5SPRY2hGmVPvCKg';
 
 mapboxgl.accessToken = mapboxApiAccessToken;
@@ -267,6 +312,11 @@ function getRoute(input_end, cb) {
 var route_layer, icon_layer;
 
 map.on('load', function() {
+
+  // Start time
+  GameTime.start()
+  GameTime.run()
+
   // make an initial directions request that starts and ends at the same location
   getRoute(start, data => {
     //Parse data
@@ -279,6 +329,8 @@ map.on('load', function() {
     map.addLayer(route_layer);
     map.addLayer(icon_layer);
   });
+
+
 
 });
 
@@ -295,6 +347,12 @@ map.on('click', event => {
     //Update route and icon
     route_layer.setProps({ data: routes })
     icon_layer.setProps({ data: startEnd })
+
+    //Update game time
+    let duration = data.routes[0].duration;
+    GameTime.update(duration * 1000);
+
+    console.log()
 
   })
 });
